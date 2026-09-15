@@ -1,0 +1,70 @@
+experiment:
+  id: E0
+  name: custom_cnn_baseline
+  seed: 42
+
+data:
+  raw_dir: data/raw
+  train_manifest: data/splits/train.csv
+  val_manifest: data/splits/val.csv
+  label_map: data/splits/label_to_index.json
+  num_classes: 72
+  input_size: 224
+  resize: aspect_preserving_pad
+  color_mode: RGB
+  normalization: train_dataset_statistics
+
+augmentation:
+  horizontal_flip: false
+  vertical_flip: false
+  rotation_degrees: 5
+  translate_fraction: 0.03
+  scale_range: [0.95, 1.05]
+
+model:
+  architecture: custom_cnn
+  pretrained: false
+  channels: [32, 64, 128, 256]
+  kernel_size: 3
+  dropout: 0.30
+
+training:
+  max_epochs: 30
+  minimum_epochs: 8
+  batch_size: 32
+  num_workers: 4
+  mixed_precision: true
+  loss: cross_entropy
+  class_weights: none
+  label_smoothing: 0.0
+  optimizer: adamw
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  scheduler:
+    name: reduce_lr_on_plateau
+    mode: max
+    monitor: val_macro_f1
+    factor: 0.2
+    patience: 2
+  early_stopping:
+    monitor: val_macro_f1
+    mode: max
+    patience: 5
+  checkpoint:
+    monitor: val_macro_f1
+    mode: max
+    accuracy_tiebreaker: true
+
+metrics:
+  - loss
+  - accuracy
+  - macro_precision
+  - macro_recall
+  - macro_f1
+  - balanced_accuracy
+  - per_class_recall
+  - confusion_matrix
+
+outputs:
+  root: results/runs
+  weights_dir: weights

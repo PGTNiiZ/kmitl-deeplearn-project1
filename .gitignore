@@ -1,0 +1,27 @@
+# Private and large project assets
+data/raw/
+data/clean/
+data/synthetic/
+data/splits/*.csv
+data/splits/*.json
+weights/*.pth
+weights/*.pt
+weights/*.ckpt
+results/audit/
+results/runs/
+results/plots/
+results/confusion_matrix/
+results/predictions/
+results/error_analysis/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+
+# OS/editor
+.DS_Store
+.vscode/

@@ -4,6 +4,7 @@ data/clean/
 data/synthetic/
 data/splits/*.csv
 data/splits/*.json
+*.zip
 weights/*.pth
 weights/*.pt
 weights/*.ckpt
@@ -13,6 +14,9 @@ results/plots/
 results/confusion_matrix/
 results/predictions/
 results/error_analysis/
+results/model_search/
+results/model_family_search/
+results/visual_smoke_demo/
 
 # Python
 __pycache__/

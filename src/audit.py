@@ -19,7 +19,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
-from src.paths import get_data_dir
+from src.paths import get_data_dir, prepare_image_directory
 
 try:
     from PIL import Image, UnidentifiedImageError
@@ -92,6 +92,7 @@ def write_csv(path: Path, fieldnames: list[str], rows: list[dict[str, Any]]) -> 
 
 def audit_dataset(data_dir: Path, output_dir: Path, label_level: int, extensions: set[str]) -> dict[str, Any]:
     """Audit images at data_dir and write reproducible manifests and a JSON report."""
+    data_dir = prepare_image_directory(data_dir, extensions)
     if not data_dir.exists() or not data_dir.is_dir():
         raise FileNotFoundError(f"Dataset directory does not exist or is not a folder: {data_dir}")
     if label_level < 1:

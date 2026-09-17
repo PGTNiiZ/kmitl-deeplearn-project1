@@ -182,7 +182,7 @@ the official test set.
 | E8 | optional 2-model ensemble | complementary errors improve accuracy | gain versus cost |
 
 All runs use the same split and seed unless the experiment explicitly studies
-seed variance. Record actual result and conclusion in `docs/EXPERIMENTS.md`.
+seed variance. Record actual result and conclusion in `docs/04-experiments.md`.
 
 ## 17. Metrics
 

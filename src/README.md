@@ -1,7 +1,13 @@
 # Source Implementation Contracts
 
-The next model should create these modules without embedding machine-specific
-paths. Configuration must drive every experiment.
+Implemented: `audit.py`, `paths.py`, `download_data.py`, `split.py`, `train.py`,
+`search.py` and `inference.py`. Run them through `notebooks/01-model-search-lab.ipynb`.
+The manifest dataset, transforms, model factory and evaluator currently live in
+`train.py` so notebook experiments use one implementation. `search.py` handles
+benchmarking, controlled ablations, SQLite-backed HPO and confirmation.
+`train.py` consumes flat `TrainConfig` JSON; the original YAML is a planning
+reference. The table below describes responsibilities, including possible
+future module extractions and optional techniques.
 
 | Module | Responsibility |
 |---|---|

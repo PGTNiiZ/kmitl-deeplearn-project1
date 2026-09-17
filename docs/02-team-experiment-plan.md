@@ -1,8 +1,24 @@
 # Team Experiment Plan
 
-Status date: 2026-09-15. This is a 72-class **image classification** project,
+## แผนแบ่ง family ที่ใช้งานปัจจุบัน
+
+สำหรับทีม 6–7 คน ใช้ [ตารางแบ่งงานและไฟล์สมาชิก](../notebooks/team/README.md)
+ที่แบ่ง 40 family จาก Notebook 02 พร้อม Custom CNN ครบ 41 โมเดล
+Notebook 03 เป็น template หลายโมเดลต่อคน กรอก `OWNER`, `TEAM_SIZE`, `MEMBER_ID`
+แล้วรัน screening บนข้อมูลจริงด้วยสูตรกลางเดียวกัน ก่อนรวมผลเพื่อเลือก shortlist
+ตาราง workstream ด้านล่างเป็นแผนภาพรวมเดิม ไม่ใช่การแบ่งไฟล์สมาชิกปัจจุบัน
+
+Status date: 2026-09-16. This is a 72-class **image classification** project,
 not object detection. The team source of truth is the shared Google Drive URL
 configured in `.env`; each machine caches it locally with `src.download_data`.
+
+The runnable [01-model-search-lab.ipynb](../notebooks/01-model-search-lab.ipynb) now
+combines setup, split, benchmark, ablations, HPO, confirmation and inference.
+Use it as the central workflow; the numbered notebooks below remain a suggested
+division of responsibilities. Its confirmation leaderboard lives under
+`results/model_search/<mode>/<split-hash>/leaderboard.csv`, separate from screening.
+The lab exports flat JSON configs and `.pt` weights; the older YAML examples in
+planning documents are design references, not executable trainer inputs.
 
 ## Decision: tools and division of responsibility
 
@@ -54,27 +70,27 @@ once, then read the local `DATA_DIR` cache through `src.paths.get_data_dir()`.
 
 | Notebook | Owner | Purpose | Required output |
 |---|---|---|---|
-| `00_data_setup_audit.ipynb` | A | download, inspect folder layout, audit data | audit report, class distribution, sample grid |
-| `01_split_validation.ipynb` | A + B review | create/check duplicate-safe 80/20 split | manifests, label map, split integrity report |
-| `02_baseline_cnn.ipynb` | B | run E0 custom CNN | run folder, curves, E0 row |
-| `TEAM_MODEL_TEMPLATE.ipynb` | every model owner | common setup/checks/run/receipt template | config and comparable run artifacts |
-| `03_backbone_benchmark.ipynb` | C + D | run E1 candidates under fixed recipe | ResNet-18/EfficientNet-B0/MobileNet leaderboard |
-| `04_augmentation_imbalance.ipynb` | E | E2/E3 safe augmentation and imbalance tests | reviewed augmentation grid, ablation rows |
-| `05_optuna_hpo.ipynb` | F | narrow HPO for selected backbone only | Optuna trials and ranked configs |
-| `06_confusion_error_analysis.ipynb` | G | confused pairs and E5 proposal | error contact sheets, targeted plan |
-| `07_final_training_inference.ipynb` | B + C + H | final confirmation and demo package | final checkpoint, inference proof |
-| `08_presentation_figures.ipynb` | H | create slide-quality figures only | plots/tables used in slides |
+| `04-data-setup-audit.ipynb` | A | download, inspect folder layout, audit data | audit report, class distribution, sample grid |
+| `05-split-validation.ipynb` | A + B review | create/check duplicate-safe 80/20 split | manifests, label map, split integrity report |
+| `06-baseline-cnn.ipynb` | B | run E0 custom CNN | run folder, curves, E0 row |
+| `03-team-model-template.ipynb` | every model owner | common setup/checks/run/receipt template | config and comparable run artifacts |
+| `07-backbone-benchmark.ipynb` | C + D | run E1 candidates under fixed recipe | ResNet-18/EfficientNet-B0/MobileNet leaderboard |
+| `08-augmentation-imbalance.ipynb` | E | E2/E3 safe augmentation and imbalance tests | reviewed augmentation grid, ablation rows |
+| `09-optuna-hpo.ipynb` | F | narrow HPO for selected backbone only | Optuna trials and ranked configs |
+| `10-confusion-error-analysis.ipynb` | G | confused pairs and E5 proposal | error contact sheets, targeted plan |
+| `11-final-training-inference.ipynb` | B + C + H | final confirmation and demo package | final checkpoint, inference proof |
+| `12-presentation-figures.ipynb` | H | create slide-quality figures only | plots/tables used in slides |
 
-Copy `TEAM_MODEL_TEMPLATE.ipynb` to a personal notebook, e.g.
-`03_resnet18_<name>.ipynb`, then edit only the model config and written
-hypothesis. Each owner may work independently once the data/split gate is met.
-Notebooks should call the shared command, for example:
+Use the prepared `notebooks/team/member-XX.ipynb` for family screening, or copy
+`03-team-model-template.ipynb` and set the owner, team size and member ID.
+Each owner may work independently once the data/split gate is met.
+For a separate single-config experiment, use the shared command:
 
 ```python
-!python3 -m src.train --config configs/experiments/efficientnet_b0_base.yaml
+!python3 -m src.train --config configs/experiments/resnet18_base.json
 ```
 
-`src.train` and the later modules are not implemented yet. Build them once;
+`src.train`, `src.split`, `src.search` and `src.inference` are implemented;
 each notebook calls that same implementation. For fair comparison, the
 transfer-model configs must differ only in architecture during the first
 backbone search. A runner should reject a missing split or config before
@@ -88,7 +104,7 @@ starting a GPU job.
 | Shared training platform | `dataset.py`, `models.py`, `metrics.py`, `train.py` | B | E0 runs from YAML and saves artifacts |
 | Backbone search | `configs/experiments/backbone_*.yaml` | C/D | fair 3-backbone leaderboard |
 | Robustness | `augmentation.py`, class-weight config | E | E2/E3 ablation evidence |
-| HPO + registry | `hpo.py`, `05_optuna_hpo.ipynb` | F | ranked reproducible trials |
+| HPO + registry | `hpo.py`, `09-optuna-hpo.ipynb` | F | ranked reproducible trials |
 | Error technique | `error_analysis.py` | G | E5 confusion-aware comparison |
 | Demo + slides | `inference.py`, `presentation/` | H | offline demo and 9:25 rehearsal |
 
@@ -170,7 +186,7 @@ never outranks a completed full-budget run.
 ## Leaderboard format
 
 Write every accepted run to `results/leaderboard.csv` and mirror its summary in
-`docs/EXPERIMENTS.md`.
+`docs/04-experiments.md`.
 
 | rank | run_id | config | backbone | seed | val_accuracy | val_macro_f1 | min_recall | params | latency_ms | status |
 |---:|---|---|---|---:|---:|---:|---:|---:|---:|---|

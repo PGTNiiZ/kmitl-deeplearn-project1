@@ -1,0 +1,436 @@
+{
+  "candidates": [
+    {
+      "family": "ResNet",
+      "model": "resnet18",
+      "group": "CNN",
+      "tier": "core",
+      "cost": "low",
+      "hypothesis": "residual connection ช่วยส่ง gradient; เป็น control ที่เทียบกับผลเดิมได้"
+    },
+    {
+      "family": "ResNeXt",
+      "model": "resnext50_32x4d",
+      "group": "CNN",
+      "tier": "core",
+      "cost": "high",
+      "hypothesis": "grouped convolution เพิ่มทางเรียน feature เส้นหลายรูปแบบ"
+    },
+    {
+      "family": "DenseNet",
+      "model": "densenet121",
+      "group": "CNN",
+      "tier": "core",
+      "cost": "medium",
+      "hypothesis": "นำ feature ตื้นกลับมาใช้ ช่วยรักษาขอบ/เส้นเล็ก แต่ใช้ activation memory มาก"
+    },
+    {
+      "family": "Res2Net",
+      "model": "res2net50_26w_4s",
+      "group": "CNN",
+      "tier": "core",
+      "cost": "high",
+      "hypothesis": "หลาย receptive fields ใน block เดียว ทดสอบหัวตัวอักษรกับโครงร่างรวม"
+    },
+    {
+      "family": "ResNeSt",
+      "model": "resnest50d",
+      "group": "Attention CNN",
+      "tier": "core",
+      "cost": "high",
+      "hypothesis": "split attention เลือก feature branch ที่สำคัญต่อรูปตัวอักษร"
+    },
+    {
+      "family": "DLA",
+      "model": "dla34",
+      "group": "CNN",
+      "tier": "extended",
+      "cost": "medium",
+      "hypothesis": "รวม feature หลายระดับ ทดสอบ local strokes กับ global shape"
+    },
+    {
+      "family": "SE-ResNet",
+      "model": "seresnet50",
+      "group": "Attention CNN",
+      "tier": "extended",
+      "cost": "high",
+      "hypothesis": "channel attention ถ่วงน้ำหนัก feature ที่แยกคลาสได้"
+    },
+    {
+      "family": "ECA-ResNet",
+      "model": "ecaresnet26t",
+      "group": "Attention CNN",
+      "tier": "extended",
+      "cost": "medium",
+      "hypothesis": "channel attention แบบเบา เทียบประโยชน์กับต้นทุน SE"
+    },
+    {
+      "family": "EfficientNet",
+      "model": "efficientnet_b0",
+      "group": "Efficient CNN",
+      "tier": "core",
+      "cost": "low",
+      "hypothesis": "compound scaling ให้ reference ของ accuracy ต่อจำนวนพารามิเตอร์"
+    },
+    {
+      "family": "EfficientNetV2",
+      "model": "efficientnetv2_rw_s",
+      "group": "Efficient CNN",
+      "tier": "core",
+      "cost": "high",
+      "hypothesis": "fused blocks เป็นอีกทางเลือกความเร็วและ capacity; เทียบกับ B0"
+    },
+    {
+      "family": "RegNet",
+      "model": "regnety_032",
+      "group": "Efficient CNN",
+      "tier": "core",
+      "cost": "medium",
+      "hypothesis": "ออกแบบ width/depth อย่างเป็นระบบ เป็น control CNN ต่าง design"
+    },
+    {
+      "family": "ReXNet",
+      "model": "rexnet_100",
+      "group": "Efficient CNN",
+      "tier": "core",
+      "cost": "low",
+      "hypothesis": "จัด channel เพื่อลด bottleneck ของข้อมูลในโมเดลเล็ก"
+    },
+    {
+      "family": "MixNet",
+      "model": "mixnet_s",
+      "group": "Efficient CNN",
+      "tier": "extended",
+      "cost": "low",
+      "hypothesis": "mixed depthwise kernels ตรวจจับเส้นหลาย scale ด้วยโมเดลเล็ก"
+    },
+    {
+      "family": "MobileNetV2",
+      "model": "mobilenetv2_100",
+      "group": "Mobile CNN",
+      "tier": "extended",
+      "cost": "low",
+      "hypothesis": "inverted residual / linear bottleneck เชื่อม convolution ที่เรียนกับงานประหยัด compute"
+    },
+    {
+      "family": "MobileNetV3",
+      "model": "mobilenetv3_large_100",
+      "group": "Mobile CNN",
+      "tier": "core",
+      "cost": "low",
+      "hypothesis": "depthwise convolution + SE เป็น backup สำหรับ demo"
+    },
+    {
+      "family": "MobileNetV4",
+      "model": "mobilenetv4_conv_small",
+      "group": "Mobile CNN",
+      "tier": "extended",
+      "cost": "low",
+      "hypothesis": "universal inverted bottleneck เปรียบเทียบ mobile design รุ่นใหม่"
+    },
+    {
+      "family": "GhostNet",
+      "model": "ghostnet_100",
+      "group": "Mobile CNN",
+      "tier": "extended",
+      "cost": "low",
+      "hypothesis": "สร้าง feature เพิ่มด้วย cheap operations ทดสอบความซ้ำซ้อนของ channel"
+    },
+    {
+      "family": "MobileOne",
+      "model": "mobileone_s0",
+      "group": "Reparameterization",
+      "tier": "extended",
+      "cost": "low",
+      "hypothesis": "หลาย branch ตอนฝึก; ศึกษา trade-off แต่ notebook ยังไม่ fuse inference"
+    },
+    {
+      "family": "RepVGG",
+      "model": "repvgg_a0",
+      "group": "Reparameterization",
+      "tier": "extended",
+      "cost": "medium",
+      "hypothesis": "VGG-style conv พร้อม branch training อธิบายได้จาก convolution"
+    },
+    {
+      "family": "RepViT",
+      "model": "repvit_m1",
+      "group": "Reparameterization",
+      "tier": "extended",
+      "cost": "low",
+      "hypothesis": "mobile CNN ที่ปรับ block ตามแนวคิด ViT; weights มี distillation จึงเป็น recipe comparison"
+    },
+    {
+      "family": "ConvNeXt",
+      "model": "convnext_tiny",
+      "group": "Modern CNN",
+      "tier": "core",
+      "cost": "high",
+      "hypothesis": "large depthwise kernel + modern block ทดสอบ CNN ที่มองบริบทกว้างขึ้น"
+    },
+    {
+      "family": "ConvNeXtV2",
+      "model": "convnextv2_atto",
+      "group": "Modern CNN",
+      "tier": "extended",
+      "cost": "low",
+      "hypothesis": "GRN + FCMAE weights ในโมเดลเล็ก; แยกผล recipe และ capacity ไม่ได้ในรอบนี้"
+    },
+    {
+      "family": "InceptionNeXt",
+      "model": "inception_next_tiny",
+      "group": "Modern CNN",
+      "tier": "core",
+      "cost": "high",
+      "hypothesis": "แยก depthwise kernels หลายรูปแบบ อาจเหมาะเส้นแนวนอน/ตั้งและส่วนโค้ง"
+    },
+    {
+      "family": "FasterNet",
+      "model": "fasternet_t0",
+      "group": "Modern CNN",
+      "tier": "extended",
+      "cost": "low",
+      "hypothesis": "partial convolution ทดสอบความเร็วจริงแทนการสรุปจาก FLOPs"
+    },
+    {
+      "family": "StarNet",
+      "model": "starnet_s1",
+      "group": "Modern CNN",
+      "tier": "extended",
+      "cost": "low",
+      "hypothesis": "element-wise multiplication เพิ่ม feature interaction ในเครือข่ายเล็ก"
+    },
+    {
+      "family": "RDNet",
+      "model": "rdnet_tiny",
+      "group": "Modern CNN",
+      "tier": "extended",
+      "cost": "high",
+      "hypothesis": "modern dense connectivity เปรียบเทียบ feature reuse กับ DenseNet"
+    },
+    {
+      "family": "HRNet",
+      "model": "hrnet_w18_small_v2",
+      "group": "CNN",
+      "tier": "core",
+      "cost": "medium",
+      "hypothesis": "คง feature ความละเอียดสูงหลาย branch อาจช่วยแยกเส้นเล็กที่คล้ายกัน"
+    },
+    {
+      "family": "ViT",
+      "model": "vit_small_patch16_224",
+      "group": "Transformer",
+      "tier": "core",
+      "cost": "medium",
+      "hypothesis": "global attention ทดสอบรูปทรงรวม; patch 16 อาจเสียรายละเอียดเส้นเล็ก"
+    },
+    {
+      "family": "DeiT",
+      "model": "deit_small_patch16_224",
+      "group": "Transformer",
+      "tier": "extended",
+      "cost": "medium",
+      "hypothesis": "ViT ที่ใช้ training recipe อีกแบบ; รุ่นนี้ไม่ใช่ distilled head"
+    },
+    {
+      "family": "Swin-Transformer",
+      "model": "swin_tiny_patch4_window7_224",
+      "group": "Transformer",
+      "tier": "core",
+      "cost": "high",
+      "hypothesis": "window attention และ hierarchy รวม local strokes กับ global structure"
+    },
+    {
+      "family": "PVTv2",
+      "model": "pvt_v2_b1",
+      "group": "Transformer",
+      "tier": "core",
+      "cost": "medium",
+      "hypothesis": "pyramid features หลาย scale พร้อม overlapping patch embedding"
+    },
+    {
+      "family": "MaxViT",
+      "model": "maxvit_tiny_tf_224",
+      "group": "Hybrid",
+      "tier": "extended",
+      "cost": "high",
+      "hypothesis": "ผสม convolution กับ block/grid attention; คุ้มเป็นตัวแทน hybrid ที่หนักกว่า"
+    },
+    {
+      "family": "MobileViT",
+      "model": "mobilevit_xxs",
+      "group": "Hybrid",
+      "tier": "core",
+      "cost": "low",
+      "hypothesis": "ผสม local conv และ global attention แบบเล็กเพื่อลองบนงบจำกัด"
+    },
+    {
+      "family": "EdgeNeXt",
+      "model": "edgenext_xx_small",
+      "group": "Hybrid",
+      "tier": "extended",
+      "cost": "low",
+      "hypothesis": "ผสม conv กับ attention ให้ representation ที่กว้างขึ้นในโมเดลเล็ก"
+    },
+    {
+      "family": "FastViT",
+      "model": "fastvit_t8",
+      "group": "Hybrid",
+      "tier": "extended",
+      "cost": "low",
+      "hypothesis": "ผสม token mixing กับ reparameterization; ยังไม่อ้างความเร็วหลัง fuse"
+    },
+    {
+      "family": "TinyViT",
+      "model": "tiny_vit_5m_224",
+      "group": "Efficient Transformer",
+      "tier": "core",
+      "cost": "low",
+      "hypothesis": "attention แบบเล็ก แต่ distillation/22k weights ทำให้เป็น recipe comparison"
+    },
+    {
+      "family": "EfficientViT-MIT",
+      "model": "efficientvit_b0",
+      "group": "Efficient Transformer",
+      "tier": "extended",
+      "cost": "low",
+      "hypothesis": "multi-scale linear attention ทดสอบบริบทหลาย scale ด้วยต้นทุนต่ำ; เป็นส่วนต่อยอดจาก CNN"
+    },
+    {
+      "family": "PoolFormer",
+      "model": "poolformer_s12",
+      "group": "Token mixer",
+      "tier": "core",
+      "cost": "medium",
+      "hypothesis": "ใช้ pooling ผสม tokens ทดสอบว่าต้องมี attention เสมอหรือไม่"
+    },
+    {
+      "family": "ConvMixer",
+      "model": "convmixer_768_32",
+      "group": "Token mixer",
+      "tier": "extended",
+      "cost": "high",
+      "hypothesis": "แยก spatial/channel mixing ด้วย conv; ตัวนี้เล็กด้าน params แต่ฝึกอาจช้า"
+    },
+    {
+      "family": "CAFormer",
+      "model": "caformer_s18",
+      "group": "Token mixer",
+      "tier": "core",
+      "cost": "high",
+      "hypothesis": "ผสม convolution ช่วงตื้นกับ attention ช่วงลึกเทียบกับ PoolFormer"
+    }
+  ],
+  "assignments": {
+    "6": {
+      "1": [
+        "ConvNeXt",
+        "CAFormer",
+        "HRNet",
+        "EfficientNet",
+        "MixNet",
+        "RepViT",
+        "FastViT"
+      ],
+      "2": [
+        "ResNeXt",
+        "InceptionNeXt",
+        "DenseNet",
+        "ViT",
+        "MobileNetV2",
+        "ConvNeXtV2",
+        "TinyViT"
+      ],
+      "3": [
+        "Res2Net",
+        "RDNet",
+        "DLA",
+        "DeiT",
+        "MobileNetV3",
+        "FasterNet",
+        "EfficientViT-MIT"
+      ],
+      "4": [
+        "ResNeSt",
+        "Swin-Transformer",
+        "ECA-ResNet",
+        "PVTv2",
+        "MobileNetV4",
+        "StarNet"
+      ],
+      "5": [
+        "SE-ResNet",
+        "MaxViT",
+        "RegNet",
+        "PoolFormer",
+        "GhostNet",
+        "MobileViT"
+      ],
+      "6": [
+        "EfficientNetV2",
+        "ConvMixer",
+        "RepVGG",
+        "ResNet",
+        "ReXNet",
+        "MobileOne",
+        "EdgeNeXt"
+      ]
+    },
+    "7": {
+      "1": [
+        "InceptionNeXt",
+        "DLA",
+        "RegNet",
+        "ResNet",
+        "MobileNetV4",
+        "MobileViT"
+      ],
+      "2": [
+        "ResNeXt",
+        "RDNet",
+        "RepVGG",
+        "EfficientNet",
+        "MobileOne",
+        "FastViT"
+      ],
+      "3": [
+        "Res2Net",
+        "Swin-Transformer",
+        "HRNet",
+        "ReXNet",
+        "RepViT",
+        "TinyViT"
+      ],
+      "4": [
+        "ResNeSt",
+        "MaxViT",
+        "ViT",
+        "MixNet",
+        "ConvNeXtV2",
+        "EfficientViT-MIT"
+      ],
+      "5": [
+        "SE-ResNet",
+        "ConvMixer",
+        "DeiT",
+        "MobileNetV2",
+        "FasterNet"
+      ],
+      "6": [
+        "EfficientNetV2",
+        "CAFormer",
+        "PVTv2",
+        "MobileNetV3",
+        "StarNet"
+      ],
+      "7": [
+        "ConvNeXt",
+        "DenseNet",
+        "ECA-ResNet",
+        "PoolFormer",
+        "GhostNet",
+        "EdgeNeXt"
+      ]
+    }
+  }
+}

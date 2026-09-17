@@ -1,5 +1,16 @@
 # Next Model Handoff
 
+## Implementation update — 2026-09-16
+
+`notebooks/01-model-search-lab.ipynb` implements the requested end-to-end notebook,
+backed by `src/split.py`, `src/train.py`, `src/search.py` and `src/inference.py`.
+Training dependencies are in `requirements-training.txt`. Start with the notebook
+and `notebooks/README.md`; the tasks below describe the original handoff.
+Synthetic smoke execution and offline tests verify mechanics, not real-data
+performance. Real dataset audit/quality review and full GPU experiments remain
+to be run. Near-duplicate/source grouping and separate unseen-test evaluation
+remain dataset-specific work. Do not mix smoke, screening and confirmation scores.
+
 ## Objective
 
 Implement a reproducible 72-class Thai character/digit training and inference
@@ -8,12 +19,12 @@ pipeline while maximizing generalization to an unseen test distribution.
 ## Read first
 
 1. `readme.md`
-2. `docs/PROJECT_PLAN.md`
-3. `docs/EXECUTION_CHECKLIST.md`
-4. `docs/FILE_TREE.md`
+2. `docs/01-project-plan.md`
+3. `docs/03-execution-checklist.md`
+4. `docs/06-file-tree.md`
 5. `configs/first_experiment.yaml`
 
-Use `plan.md` only as the original requirements source. The project plan has
+Use `00-project-requirements.md` only as the original requirements source. The project plan has
 already converted it into decisions and ordered work.
 
 ## Start here

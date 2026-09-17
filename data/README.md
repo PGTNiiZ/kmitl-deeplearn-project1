@@ -29,10 +29,14 @@ data/
 ├── splits/
 │   ├── train.csv
 │   ├── val.csv
-│   └── label_to_index.json
+│   ├── label_to_index.json
+│   └── split_meta.json
 └── synthetic/           # optional training-only generated images
 ```
 
 The audit must determine the actual source layout. Do not assume a class-folder
 format. Validation must contain real images only; synthetic images never enter
 validation. Duplicate group IDs must stay entirely within one split.
+
+ขั้นตอนตั้งเครื่อง รับ split กลาง และกติกาการแชร์ไฟล์อยู่ใน
+[`docs/00-team-guide.md`](../docs/00-team-guide.md)

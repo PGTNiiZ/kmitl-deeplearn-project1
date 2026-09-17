@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import os
 import urllib.parse
+import zipfile
 from pathlib import Path
 
 
@@ -49,6 +50,49 @@ def get_data_dir() -> Path:
         f"Either place the dataset in {DEFAULT_DATA_DIR}, or copy .env.example to .env "
         f"and set {ENVIRONMENT_KEY} to your own local/mounted dataset path."
     )
+
+
+def prepare_image_directory(data_dir: Path, extensions: set[str]) -> Path:
+    """Extract a single local ZIP cache when needed and return its image root.
+
+    Some shared Drive exports contain one archive whose top-level directory is
+    the dataset (for example ``raw/ThaiCharacter Dataset.zip`` containing
+    ``round2/<class>/<image>.jpg``).  Training code needs the extracted
+    directory, with class folders immediately below it.  The helper leaves an
+    already usable image directory untouched.
+    """
+    data_dir = data_dir.expanduser().resolve()
+    if not data_dir.is_dir():
+        return data_dir
+
+    def has_images(directory: Path) -> bool:
+        return any(
+            path.is_file() and path.suffix.lower() in extensions
+            for path in directory.rglob("*")
+            if not any(part.startswith(".") for part in path.relative_to(directory).parts)
+        )
+
+    if not has_images(data_dir):
+        archives = sorted(path for path in data_dir.iterdir() if path.is_file() and path.suffix.lower() == ".zip")
+        if len(archives) == 1:
+            with zipfile.ZipFile(archives[0]) as archive:
+                target = data_dir.resolve()
+                for member in archive.infolist():
+                    destination = (target / member.filename).resolve()
+                    if destination != target and target not in destination.parents:
+                        raise ValueError(f"Unsafe path in dataset archive: {member.filename}")
+                archive.extractall(target)
+        elif len(archives) > 1:
+            raise ValueError(f"Found multiple ZIP archives in {data_dir}; set DATA_PATH to the extracted dataset folder.")
+
+    # A single wrapper directory (e.g. raw/round2) is not a label; use it as
+    # the image root so LABEL_LEVEL=1 still selects each class folder.
+    children = sorted(path for path in data_dir.iterdir() if path.is_dir() and not path.name.startswith("."))
+    image_children = [child for child in children if has_images(child)]
+    direct_images = any(path.parent == data_dir for path in data_dir.iterdir() if path.is_file() and path.suffix.lower() in extensions)
+    if not direct_images and len(image_children) == 1:
+        return image_children[0]
+    return data_dir
 
 
 def get_drive_url() -> str:

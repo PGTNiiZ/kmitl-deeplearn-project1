@@ -4,10 +4,10 @@ experiment:
   seed: 42
 
 data:
-  raw_dir: data/raw
-  train_manifest: data/splits/train.csv
-  val_manifest: data/splits/val.csv
-  label_map: data/splits/label_to_index.json
+  raw_dir: data/raw/clean_32x32
+  train_manifest: data/splits/clean_32x32/train.csv
+  val_manifest: data/splits/clean_32x32/val.csv
+  label_map: data/splits/clean_32x32/label_to_index.json
   num_classes: 72
   input_size: 224
   resize: aspect_preserving_pad

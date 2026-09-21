@@ -2,8 +2,8 @@
 data/raw/
 data/clean/
 data/synthetic/
-data/splits/*.csv
-data/splits/*.json
+data/splits/**/*.csv
+data/splits/**/*.json
 *.zip
 weights/*.pth
 weights/*.pt
@@ -17,6 +17,11 @@ results/error_analysis/
 results/model_search/
 results/model_family_search/
 results/visual_smoke_demo/
+
+# Team 2 generated datasets and experiment outputs
+notebooks/team2/team2_data/
+notebooks/team2/team2_workspace/data/
+notebooks/team2/team2_workspace/results/
 
 # Python
 __pycache__/

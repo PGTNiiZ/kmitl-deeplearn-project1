@@ -193,7 +193,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--data-dir",
         type=Path,
-        help="Optional dataset directory. If omitted, uses THAI_CHAR_DATA_DIR or repository data/raw.",
+        help="Optional dataset directory/ZIP. If omitted, uses THAI_CHAR_DATA_DIR or data/raw.",
     )
     parser.add_argument("--output-dir", type=Path, default=Path("results/audit"), help="Directory for CSV/JSON artifacts.")
     parser.add_argument(

@@ -1,8 +1,8 @@
 # Data Layout
 
 Dataset files are intentionally not committed. Google Drive is the team source
-of truth. Each member downloads the same shared folder into `data/raw/`, the
-default local cache, by running:
+of truth. The training dataset is `data/raw`; notebooks extract
+it automatically before auditing or training.
 
 ```bash
 python3 -m src.download_data
@@ -15,7 +15,7 @@ path configuration.
 If a member uses a local cache elsewhere, they additionally set:
 
 ```text
-THAI_CHAR_DATA_DIR=/their/local/or/mounted/dataset/path
+THAI_CHAR_DATA_DIR=/their/local/or/mounted/clean_32x32
 ```
 
 `.env` is ignored by Git, so each person can use a different local cache path.
@@ -24,9 +24,10 @@ coding a personal path or `../data` in a notebook.
 
 ```text
 data/
-├── raw/                 # immutable downloaded source
+├── raw/
+│   └── clean_32x32/      # immutable downloaded source used for training
 ├── clean/               # optional validated/canonical view
-├── splits/
+├── splits/clean_32x32/
 │   ├── train.csv
 │   ├── val.csv
 │   ├── label_to_index.json

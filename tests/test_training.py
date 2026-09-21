@@ -14,7 +14,7 @@ from PIL import Image
 from src.audit import audit_dataset, DEFAULT_EXTENSIONS
 from src.inference import Predictor
 from src.split import prepare_split, read_rows
-from src.train import TrainConfig, build_model, fit
+from src.train import TrainConfig, build_model, choose_device, fit
 
 
 class TrainingIntegrationTest(unittest.TestCase):
@@ -50,6 +50,13 @@ class TrainingIntegrationTest(unittest.TestCase):
         checkpoint = torch.load(receipt['checkpoint_path'], weights_only=True)
         self.assertEqual(checkpoint['split_hash'], receipt['split_hash'])
         self.assertEqual(checkpoint['best_epoch'], receipt['best_epoch'])
+
+    def test_device_auto_prefers_cuda_and_rejects_unavailable_cuda(self):
+        with patch('src.train.torch.cuda.is_available', return_value=True):
+            self.assertEqual(choose_device('auto').type, 'cuda')
+        with patch('src.train.torch.cuda.is_available', return_value=False):
+            with self.assertRaisesRegex(RuntimeError, 'no CUDA GPU'):
+                choose_device('cuda')
 
     def test_pruned_run_is_never_complete(self):
         trial = Mock()

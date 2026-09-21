@@ -14,28 +14,23 @@
 
 | ส่งผ่าน GitHub | ส่งผ่าน Drive กลาง |
 |---|---|
-| `src/`, `notebooks/`, `configs/`, `docs/`, tests และ requirements | dataset จริง, `data/splits/`, checkpoints ที่เข้ารอบ และผลทดลองที่ต้องรวม |
+| `src/`, `notebooks/`, `configs/`, `docs/`, tests และ requirements | dataset `clean_32x32/`, `data/splits/clean_32x32/`, checkpoints ที่เข้ารอบ และผลทดลองที่ต้องรวม |
 
 ผู้ดูแลโปรเจกต์ push โค้ดขึ้น repository `PGTNiiZ/kmitl-deeplearn-project1`
 ส่วนผู้ดูแลข้อมูลอัปโหลดแพ็กข้อมูลกลางที่มีโครงสร้างนี้:
 
 ```text
 team-data/
-├── round2/                  # 72 โฟลเดอร์คลาส, 62,707 ภาพ
-└── splits/
+├── clean_32x32/               # 72 คลาส
+└── splits/clean_32x32/
     ├── train.csv
     ├── val.csv
     ├── label_to_index.json
     └── split_meta.json
 ```
 
-ในเครื่องผู้ดูแลมีไฟล์ `data.zip` พร้อมส่งอยู่แล้ว ภายในมีทั้ง dataset และ split
-hash `e90d3777438a...` ให้ upload ไฟล์นี้ขึ้น Drive กลาง เพื่อนดาวน์โหลดแล้วแตก ZIP
-ที่ root ของ repository จะได้ `data/raw/round2/` และ `data/splits/` ในตำแหน่งถูกต้อง
-ไฟล์นี้ถูก ignore และต้องไม่ `git add` หรือ push เข้า GitHub
-
-เมื่อเพื่อนได้ไฟล์ ให้วาง `round2/` ที่ `data/raw/round2/` และวางไฟล์ split ทั้ง
-4 ไฟล์ที่ `data/splits/` ห้ามสร้าง split ของตัวเอง เพราะคะแนนจะเทียบกันไม่ได้
+วาง `clean_32x32/` ที่ `data/raw/clean_32x32/` และ split กลางทั้ง 4 ไฟล์ที่
+`data/splits/clean_32x32/` ไฟล์ข้อมูลถูก ignore และต้องไม่ push เข้า GitHub
 
 ## เริ่มเทรนภายใน 10 นาที
 
@@ -55,8 +50,8 @@ Windows PowerShell ใช้ `.venv\Scripts\Activate.ps1` แทน `source .ven
 
 ```python
 MODE = "quick"
-DATA_PATH = "data/raw"
-SPLIT_PATH = "data/splits"
+DATA_PATH = "data/raw/clean_32x32"
+SPLIT_PATH = "data/splits/clean_32x32"
 POOL = "all"
 ONLY_FAMILIES = ["ชื่อ family ที่ได้รับมอบหมาย"]
 INCLUDE_CUSTOM_CNN = False
@@ -68,9 +63,9 @@ OUTPUT_ROOT = "results/team/ชื่อเล่น"
 
 ```text
 ✅ REAL DATA พร้อมใช้งาน
-Dataset root: .../data/raw
-โฟลเดอร์ภาพจริง: .../data/raw/round2
-จำนวนภาพ / คลาส: 62707 / 72
+Dataset root: .../data/raw/clean_32x32
+โฟลเดอร์ภาพจริง: .../data/raw/clean_32x32
+จำนวนภาพ / คลาส: ... / 72
 ```
 
 หากเห็น `synthetic_0` หรือ `ชุดทดลอง: smoke` ให้หยุด เพราะกำลังใช้ผลจำลองหรือ
@@ -127,21 +122,19 @@ cp -n .env.example .env
 python -m src.download_data
 ```
 
-ข้อมูลจะอยู่ที่ `data/raw` ถ้ามีข้อมูลอยู่ที่อื่น ให้ใส่ absolute path ใน `.env`:
+ข้อมูลหลักคือ `data/raw` ถ้ามีข้อมูลอยู่ที่อื่น ให้ใส่ absolute path ใน `.env`:
 
 ```text
-THAI_CHAR_DATA_DIR=/absolute/path/to/dataset
+THAI_CHAR_DATA_DIR=/absolute/path/to/clean_32x32
 ```
 
-ข้อมูลควรเป็นโฟลเดอร์แยกตามคลาส:
+ข้อมูลต้องมีโฟลเดอร์คลาส:
 
 ```text
-dataset/
-├── class_01/
-│   ├── image_001.png
-│   └── image_002.png
-├── class_02/
-└── ...
+clean_32x32/
+└── consonants/
+    ├── 0_ก/
+    └── ...
 ```
 
 ห้าม commit รูปภาพ, `.env`, weights หรือผลเทรนลง Git
@@ -173,19 +166,19 @@ python -m jupyterlab
 3. ตรวจ `DATA_PATH`, `EXPECTED_CLASSES` และ `LABEL_LEVEL`
 4. รันถึงส่วน “แบ่ง train / validation”
 5. ตรวจว่ามี 72 คลาส และไม่มี corrupt image หรือ label error
-6. ส่งโฟลเดอร์ `data/splits` ให้สมาชิกทุกคนผ่าน Drive กลาง
+6. ส่งโฟลเดอร์ `data/splits/clean_32x32` ให้สมาชิกทุกคนผ่าน Drive กลาง
 
 โฟลเดอร์ split ต้องมีครบ:
 
 ```text
-data/splits/
+data/splits/clean_32x32/
 ├── train.csv
 ├── val.csv
 ├── label_to_index.json
 └── split_meta.json
 ```
 
-สมาชิกทุกคนวางทั้ง 4 ไฟล์ไว้ที่ `data/splits` ห้ามสร้าง split ใหม่เอง หากระบบ
+สมาชิกทุกคนวางทั้ง 4 ไฟล์ไว้ที่ `data/splits/clean_32x32` ห้ามสร้าง split ใหม่เอง หากระบบ
 แจ้งว่า dataset หรือ split เปลี่ยน ให้รับไฟล์กลางจากผู้รับผิดชอบข้อมูลอีกครั้ง
 
 ## 5. ทดลองโมเดลของตัวเอง
@@ -205,7 +198,7 @@ config โดยเปลี่ยนเฉพาะค่าที่ต้อ�
 ```bash
 python -m src.train \
   --config configs/experiments/resnet18_mint.json \
-  --split-dir data/splits
+  --split-dir data/splits/clean_32x32
 ```
 
 คำสั่งนี้อ่านตำแหน่ง dataset จาก `.env` หากต้องใช้ path อื่นเฉพาะครั้ง ให้เพิ่ม
@@ -222,7 +215,7 @@ MEMBER_ID = 1  # แต่ละคนใช้หมายเลขไม่ซ
 MODE = "quick"  # screening ด้วยข้อมูลจริง
 ```
 
-Template จะเลือกหลาย family ให้แต่ละคนและใช้สูตรกลางเดียวกัน ส่งโฟลเดอร์ผลทั้งชุด
+Template จะเลือกหนึ่งงานต่อการ Run All ตาม `MEMBER_ID` และ `ROUND`; ส่งโฟลเดอร์ผล
 พร้อม `handoff.json` ให้ผู้รวมผลก่อนเลือก shortlist และจูนต่อ
 
 หนึ่งการทดลองควรเปลี่ยนทีละอย่าง เช่น เปลี่ยน architecture อย่างเดียว หรือเปิด
@@ -250,7 +243,7 @@ best.pt                checkpoint ที่ดีที่สุด
 
 ผลใน leaderboard เดียวกันต้องใช้:
 
-- dataset และ `data/splits` ชุดเดียวกัน
+- `clean_32x32/` และ `data/splits/clean_32x32/` ชุดเดียวกัน
 - image size และ validation preprocessing เดียวกัน
 - seed และ epoch budget ตามรอบที่ทีมกำหนด
 - macro F1 เป็นคะแนนหลัก และ accuracy เป็นคะแนนประกอบ

@@ -23,7 +23,7 @@ activation, pooling, loss, backpropagation, transfer learning, augmentation
 forward/backward ก่อนฝึก, บันทึก failures, screening และยืนยัน top candidates หลาย seed
 ใช้ trainer และ split กลางเดิม ผลแยกไว้ใน `results/model_family_search/`
 
-ค่าเริ่มต้นใช้ `MODE="quick"` กับข้อมูลจริงที่ `data/raw`; `smoke` ใช้เฉพาะตรวจระบบ
+ค่าเริ่มต้นใช้ `MODE="quick"` กับ `data/raw`; `smoke` ใช้เฉพาะตรวจระบบ
 และห้ามนำคะแนนไปเทียบผลจริง ใช้ `POOL="all"` เพื่อรันทั้ง 40 ตัว (`core` = 20 ตัว) ข้อมูลจริงต้องมี split กลางครบ
 4 ไฟล์ก่อน ตั้ง `ONLY_FAMILIES` เพื่อแบ่งงานได้ ส่วน `RUN_HPO=True` เปิดการจูน
 เฉพาะ family ที่ชนะเพิ่มเติม ผลยังเป็น validation ไม่ใช่ unseen-test performance
@@ -57,8 +57,8 @@ python3 -m venv .venv
 ```
 
 Select the `.venv` kernel in VS Code, or open the notebook from JupyterLab.
-The notebook now defaults to the real local dataset root at `data/raw` (images in `round2/`; 72 classes,
-62,707 images) and `MODE="quick"`; change `DATA_PATH` if your copy is elsewhere,
+The notebook now defaults to `data/raw/clean_32x32` (72 classes)
+and `MODE="quick"`; change `DATA_PATH` if your copy is elsewhere,
 then Run All. Set `MODE="full"` when you are ready for the longer run; it uses 12 screening epochs, 12 HPO trials of 8 epochs,
 then 30-epoch confirmation for two candidates plus control on two seeds.
 Use `quick` for a smaller budget or `smoke` for a self-contained generated-image
@@ -67,8 +67,8 @@ test that needs no real data/pretrained download. Smoke scores are not research 
 The notebook locates the repo from either its root or `notebooks/` directory.
 On Colab, clone/upload the entire repository, select a GPU and set `REPO_PATH`;
 use mounted persistent storage for `OUTPUT_ROOT` and `SPLIT_PATH` to preserve
-weights, the split and Optuna SQLite across sessions. Inputs must be extracted
-image folders, not ZIP files. Private Drive data can be mounted manually.
+weights, the split and Optuna SQLite across sessions. The configured ZIP is
+extracted automatically. Private Drive data can be mounted manually.
 
 Outputs are under `results/model_search/<mode>/<split-hash>/`: screening CSVs,
 Optuna SQLite/trials, confirmation leaderboard, curves, errors and an `export/`
@@ -86,7 +86,7 @@ teammates' results. Do not run concurrent notebooks against one output directory
 ## Template แบ่งงานทีม 6–7 คน
 
 [03-team-model-template.ipynb](03-team-model-template.ipynb) เป็น template สำหรับ
-เทรนหลาย family ต่อคนด้วยข้อมูลจริง มีไฟล์พร้อมแจก
+เทรนหนึ่ง family ต่อคนต่อรอบด้วยข้อมูลจริง มีไฟล์พร้อมแจก
 [member-01 ถึง member-07 และตารางแบ่งงาน](team/README.md)
 ครอบคลุม 40 family ที่คัดไว้ใน Notebook 02 และ Custom CNN หนึ่งตัว
 
@@ -108,7 +108,8 @@ DATA_DIR = get_data_dir()
 print(DATA_DIR)
 ```
 
-`DATA_DIR` resolves to `data/raw/` by default. Run `python3 -m src.download_data`
+`DATA_DIR` resolves to `data/raw/clean_32x32/` by default. Place the shared
+`clean_32x32/` folder in `data/raw/` (or run `python3 -m src.download_data`)
 once to cache the shared Google Drive folder locally, then every notebook uses
 the same code without committing an absolute personal path.
 

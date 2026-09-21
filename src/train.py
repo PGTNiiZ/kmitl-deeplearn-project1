@@ -113,10 +113,27 @@ def build_model(config: TrainConfig, classes: int, load_pretrained: bool = True)
 
 
 def choose_device(name: str):
+    name = name.lower()
     if name == "auto":
         name = "cuda" if torch.cuda.is_available() else (
             "mps" if torch.backends.mps.is_available() else "cpu")
-    return torch.device(name)
+    device = torch.device(name)
+    if device.type == "cuda":
+        if not torch.cuda.is_available():
+            raise RuntimeError("CUDA was requested but no CUDA GPU is available to PyTorch")
+        if device.index is not None and device.index >= torch.cuda.device_count():
+            raise RuntimeError(f"CUDA device {device.index} does not exist")
+    elif device.type == "mps" and not torch.backends.mps.is_available():
+        raise RuntimeError("MPS was requested but is not available to PyTorch")
+    elif device.type not in {"cpu", "cuda", "mps"}:
+        raise ValueError("device must be auto, cpu, cuda, cuda:<index>, or mps")
+    return device
+
+
+def device_name(device: torch.device) -> str:
+    if device.type == "cuda":
+        return torch.cuda.get_device_name(device)
+    return "Apple MPS" if device.type == "mps" else "CPU"
 
 
 def seed_everything(seed: int):
@@ -202,11 +219,13 @@ def fit(config: TrainConfig, data_dir: Path, split_dir: Path, output_dir: Path,
                 return receipt
     seed_everything(config.seed)
     device = choose_device(config.device)
+    print(f"Training device: {device} ({device_name(device)})", flush=True)
     run_id = f"{phase}-{config.architecture}-{uuid.uuid4().hex[:10]}"
     run_dir = output_dir / run_id
     run_dir.mkdir()
     save_json(run_dir / "config.json", asdict(config))
-    save_json(run_dir / "environment.json", {**versions, "device": str(device), "code_hash": code_hash})
+    save_json(run_dir / "environment.json", {**versions, "device": str(device),
+                                               "device_name": device_name(device), "code_hash": code_hash})
     receipt = {"run_id": run_id, "run_key": run_key, "status": "running", "phase": phase,
                "split_hash": meta["split_hash"], "seed": config.seed, "backbone": config.architecture,
                "max_epochs": config.epochs, "config_path": str(run_dir / "config.json"),
@@ -326,12 +345,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, required=True, help="Flat TrainConfig JSON exported by the search notebook")
     parser.add_argument("--data-dir", type=Path)
-    parser.add_argument("--split-dir", type=Path, default=Path("data/splits"))
+    parser.add_argument("--split-dir", type=Path, default=Path("data/splits/clean_32x32"))
     parser.add_argument("--output-dir", type=Path, default=Path("results/runs"))
     args = parser.parse_args()
-    from src.paths import get_data_dir
+    from src.paths import DEFAULT_IMAGE_EXTENSIONS, get_data_dir, prepare_image_directory
     config = TrainConfig(**json.loads(args.config.read_text()))
-    receipt = fit(config, args.data_dir or get_data_dir(), args.split_dir, args.output_dir)
+    data_dir = prepare_image_directory(args.data_dir, DEFAULT_IMAGE_EXTENSIONS) if args.data_dir else get_data_dir()
+    receipt = fit(config, data_dir, args.split_dir, args.output_dir)
     print(json.dumps(receipt, indent=2, ensure_ascii=False))
 
 

@@ -42,6 +42,9 @@ class TeamNotebookTest(unittest.TestCase):
             self.assertEqual(member_ns['MEMBER_ID'], member_id)
             self.assertEqual(member_ns['ROUND'], 1)
             self.assertIsNone(member_ns['JOB_ID'])
+            self.assertEqual(member_ns['DATA_PATH'], 'data/raw/clean_32x32')
+            self.assertEqual(member_ns['SPLIT_PATH'], '')
+            self.assertEqual(member_ns['LABEL_LEVEL'], 1)
 
         ns = {}
         exec(self.cell('settings'), ns)

@@ -173,12 +173,13 @@ def load_split(data_dir: Path, split_dir: Path):
     return train, val, mapping, meta
 
 
-def evaluate(model, loader, device, criterion, classes):
+def evaluate(model, loader, device, criterion, classes, progress_label="Validation"):
     model.eval()
     actual, predicted, confidence = [], [], []
     total_loss = 0.0
     with torch.inference_mode():
-        for images, targets in loader:
+        progress_every = max(1, len(loader) // 20)
+        for batch, (images, targets) in enumerate(loader, start=1):
             images, targets = images.to(device), targets.to(device)
             logits = model(images)
             total_loss += criterion(logits, targets).sum().item()
@@ -187,6 +188,9 @@ def evaluate(model, loader, device, criterion, classes):
             actual.extend(targets.cpu().tolist())
             predicted.extend(indices.cpu().tolist())
             confidence.extend(scores.cpu().tolist())
+            if batch % progress_every == 0 or batch == len(loader):
+                print(f"  {progress_label}: {batch:,}/{len(loader):,} batches "
+                      f"({batch / len(loader):.0%})", flush=True)
     report = classification_report(actual, predicted, labels=list(range(classes)),
                                    output_dict=True, zero_division=0)
     metrics = {"val_loss": total_loss / len(actual), "val_accuracy": accuracy_score(actual, predicted),
@@ -262,6 +266,7 @@ def fit(config: TrainConfig, data_dir: Path, split_dir: Path, output_dir: Path,
         freeze_epochs = config.freeze_epochs if config.pretrained and config.architecture != "custom_cnn" else 0
         history, best, stale = [], (-1.0, -1.0), 0
         for epoch in range(config.epochs):
+            print(f"Epoch {epoch + 1}/{config.epochs}", flush=True)
             frozen = epoch < freeze_epochs
             if epoch in {0, freeze_epochs}:
                 for parameter in model.parameters():
@@ -278,7 +283,8 @@ def fit(config: TrainConfig, data_dir: Path, split_dir: Path, output_dir: Path,
                 model.eval()  # Freeze running BatchNorm statistics as well as gradients.
                 model.get_classifier().train()
             total_loss = correct = seen = 0
-            for images, targets in train_loader:
+            progress_every = max(1, len(train_loader) // 20)
+            for batch, (images, targets) in enumerate(train_loader, start=1):
                 images, targets = images.to(device), targets.to(device)
                 optimizer.zero_grad(set_to_none=True)
                 with torch.autocast(device_type=device.type, enabled=use_amp):
@@ -294,7 +300,11 @@ def fit(config: TrainConfig, data_dir: Path, split_dir: Path, output_dir: Path,
                 total_loss += loss.item() * len(targets)
                 correct += (logits.argmax(1) == targets).sum().item()
                 seen += len(targets)
-            metrics, report, actual, predicted, confidence = evaluate(model, val_loader, device, val_criterion, len(mapping))
+                if batch % progress_every == 0 or batch == len(train_loader):
+                    print(f"  Training: {batch:,}/{len(train_loader):,} batches "
+                          f"({batch / len(train_loader):.0%})", flush=True)
+            metrics, report, actual, predicted, confidence = evaluate(
+                model, val_loader, device, val_criterion, len(mapping))
             if not np.isfinite(list(metrics.values())).all():
                 raise FloatingPointError("Non-finite validation metrics")
             record = {"epoch": epoch + 1, "stage": "head" if frozen else "finetune",

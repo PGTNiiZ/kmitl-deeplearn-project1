@@ -5,6 +5,7 @@ timm>=1.0,<2
 optuna>=4.0,<5
 numpy>=1.26,<3
 pandas>=2.2,<4
+openpyxl>=3.1,<4
 scikit-learn>=1.5,<2
 matplotlib>=3.9,<4
 jupyterlab>=4,<5

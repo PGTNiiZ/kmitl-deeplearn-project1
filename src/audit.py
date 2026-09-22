@@ -110,7 +110,8 @@ def audit_dataset(data_dir: Path, output_dir: Path, label_level: int, extensions
     hashes: dict[str, list[str]] = {}
 
     paths = list(image_paths(data_dir, extensions))
-    for path in paths:
+    print(f"Auditing {len(paths):,} images in {data_dir}...", flush=True)
+    for index, path in enumerate(paths, start=1):
         try:
             label = label_for_path(path, data_dir, label_level)
         except ValueError as error:
@@ -137,6 +138,8 @@ def audit_dataset(data_dir: Path, output_dir: Path, label_level: int, extensions
                 "sha256": content_hash,
             }
         )
+        if index % 10_000 == 0 or index == len(paths):
+            print(f"Audit progress: {index:,}/{len(paths):,}", flush=True)
 
     exact_duplicate_groups = [group for group in hashes.values() if len(group) > 1]
     ordered_counts = sorted(class_counts.items(), key=lambda item: (item[1], item[0]))

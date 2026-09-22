@@ -29,7 +29,7 @@ def parser(group_id: int) -> argparse.ArgumentParser:
     command.add_argument("--split-dir", type=Path,
                          default=REPOSITORY_ROOT / f"data/splits/{DRIVE_FILE_ID}_source_v3")
     command.add_argument("--output-dir", type=Path,
-                         default=REPOSITORY_ROOT / f"results/team_model_benchmark/group_{group_id:02d}")
+                         default=REPOSITORY_ROOT / f"results/team_model_benchmark/worker_{group_id:02d}")
     command.add_argument("--device", default="auto")
     command.add_argument("--epochs", type=int, default=6)
     command.add_argument("--image-size", type=int, default=128)
@@ -54,12 +54,15 @@ def smoke_data(root: Path) -> Path:
 
 def real_data(requested: Path | None) -> Path:
     if requested:
-        return prepare_image_directory(requested, DEFAULT_EXTENSIONS)
+        data_dir = prepare_image_directory(requested, DEFAULT_EXTENSIONS)
+        print(f"Dataset ready: {data_dir}", flush=True)
+        return data_dir
     cache = REPOSITORY_ROOT / "data/raw" / DRIVE_FILE_ID
     target = cache / "clean_32x32"
     try:
         data_dir = prepare_image_directory(target, DEFAULT_EXTENSIONS)
         if data_dir.is_dir() and any(data_dir.rglob("*.png")):
+            print(f"Dataset ready (cached): {data_dir}", flush=True)
             return data_dir
     except (FileNotFoundError, ValueError):
         pass
@@ -69,7 +72,10 @@ def real_data(requested: Path | None) -> Path:
         cwd=REPOSITORY_ROOT,
         check=True,
     )
-    return prepare_image_directory(target, DEFAULT_EXTENSIONS)
+    print(f"Extracting dataset into {cache}...", flush=True)
+    data_dir = prepare_image_directory(target, DEFAULT_EXTENSIONS)
+    print(f"Dataset ready: {data_dir}", flush=True)
+    return data_dir
 
 
 def audit_and_split(data_dir: Path, split_dir: Path, output_root: Path,
@@ -81,12 +87,18 @@ def audit_and_split(data_dir: Path, split_dir: Path, output_root: Path,
         report = json.loads(report_path.read_text())
         reuse_audit = Path(report.get("data_dir", "")).resolve() == data_dir.resolve()
     if not reuse_audit:
+        print("Stage 2/4: auditing dataset and hashing files", flush=True)
         report = audit_dataset(data_dir, audit_dir, 1, DEFAULT_EXTENSIONS)
+    else:
+        print(f"Stage 2/4: reusing audit from {audit_dir}", flush=True)
     if report["corrupt_images"] or report["label_errors"]:
         raise ValueError("Dataset contains corrupt images or label errors; inspect the audit output.")
+    print("Stage 3/4: preparing leakage-safe split", flush=True)
     prepare_split(data_dir, audit_dir, split_dir, seed=42, val_fraction=0.2,
                   expected_classes=expected_classes)
-    return load_split(data_dir, split_dir)
+    loaded = load_split(data_dir, split_dir)
+    print(f"Split ready: {len(loaded[0]):,} train / {len(loaded[1]):,} validation", flush=True)
+    return loaded
 
 
 def resolve_architecture(name: str) -> str:
@@ -127,8 +139,14 @@ def run_group(group_id: int, candidates: list[dict]) -> int:
     if min(args.epochs, args.image_size, args.batch_size) < 1 or args.num_workers < 0:
         raise ValueError("epochs/image-size/batch-size must be positive and num-workers cannot be negative")
 
+    worker = f"worker_{group_id:02d}"
     mode = "smoke" if args.smoke else "quick"
     output_root = args.output_dir.resolve() / mode
+    print(f"\n=== {worker}: complete model benchmark ===", flush=True)
+    print("Stage 1/4: preparing dataset", flush=True)
+    print(f"Settings: epochs={args.epochs}, image_size={args.image_size}, "
+          f"batch_size={args.batch_size}, num_workers={args.num_workers}, device={args.device}",
+          flush=True)
     if args.smoke:
         data_dir = smoke_data(output_root / "smoke_fixture")
         split_dir = output_root / "smoke_fixture/split"
@@ -145,17 +163,20 @@ def run_group(group_id: int, candidates: list[dict]) -> int:
                            epochs=args.epochs, freeze_epochs=2, patience=3, pretrained=True,
                            device=args.device, num_workers=args.num_workers)
 
+    # Real workers share one expensive audit; smoke runs stay isolated.
+    shared_root = (output_root / "smoke_fixture/shared" if args.smoke else
+                   REPOSITORY_ROOT / "results/team_model_benchmark/worker_01/shared")
     train_rows, val_rows, mapping, split_meta = audit_and_split(
-        data_dir, split_dir, output_root.parent / "shared", expected_classes)
+        data_dir, split_dir, shared_root, expected_classes)
     if args.expected_split_hash and split_meta["split_hash"] != args.expected_split_hash:
         raise ValueError(f"Split hash mismatch: {split_meta['split_hash']}")
 
     protocol = {
-        "group_id": group_id,
+        "worker_id": group_id,
         "mode": mode,
         "config": asdict(base),
         "split_hash": split_meta["split_hash"],
-        "models": [candidate["model"] for candidate in selected],
+        "assigned_models": selected,
     }
     protocol_id = fingerprint(protocol)[:16]
     experiment_dir = output_root / split_meta["split_hash"][:12] / protocol_id
@@ -163,9 +184,16 @@ def run_group(group_id: int, candidates: list[dict]) -> int:
     save_json(experiment_dir / "protocol.json", protocol)
 
     statuses, receipts = [], []
-    for candidate in selected:
-        status = {"group_id": group_id, **candidate, "split_hash": split_meta["split_hash"],
+    print(f"Stage 4/4: training {len(selected)} model(s) and exporting results", flush=True)
+    for model_number, candidate in enumerate(selected, start=1):
+        print(f"\nModel {model_number}/{len(selected)}: "
+              f"{candidate['family']} ({candidate['model']})", flush=True)
+        status = {"worker_id": group_id, **candidate, "seed": base.seed,
+                  "epochs_requested": args.epochs, "split_hash": split_meta["split_hash"],
                   "protocol_id": protocol_id, "status": "running"}
+        statuses.append(status)
+        status_path = experiment_dir / f"{worker}_run_status.csv"
+        pd.DataFrame(statuses).to_csv(status_path, index=False)
         try:
             architecture = resolve_architecture(candidate["model"])
             config = replace(base, architecture=architecture,
@@ -173,31 +201,54 @@ def run_group(group_id: int, candidates: list[dict]) -> int:
             status["architecture"] = architecture
             status["parameter_count_preflight"] = preflight(config, len(mapping))
             receipt = fit(config, data_dir, split_dir, experiment_dir / "runs",
-                          phase=f"group_{group_id:02d}_screening")
-            receipt.update(candidate, group_id=group_id, protocol_id=protocol_id)
+                          phase=f"{worker}_family_screening")
+            receipt.update(candidate, worker_id=group_id, protocol_id=protocol_id,
+                           epochs_requested=args.epochs)
             receipts.append(receipt)
-            status.update(status="complete", run_id=receipt["run_id"])
+            status.update(status="complete", run_id=receipt["run_id"],
+                          checkpoint_path=receipt["checkpoint_path"])
         except Exception as error:
             status.update(status="failed", error=f"{type(error).__name__}: {error}")
             print("FAILED", candidate["family"], status["error"], flush=True)
-        statuses.append(status)
-        pd.DataFrame(statuses).to_csv(experiment_dir / f"group_{group_id:02d}_run_status.csv", index=False)
+        pd.DataFrame(statuses).to_csv(status_path, index=False)
 
     summary = pd.DataFrame(receipts)
     if not summary.empty:
         summary = summary.sort_values(["val_macro_f1", "val_accuracy"], ascending=False)
-    summary.to_csv(experiment_dir / f"group_{group_id:02d}_model_summary.csv", index=False)
+    summary_path = experiment_dir / f"{worker}_model_summary.csv"
+    status_path = experiment_dir / f"{worker}_run_status.csv"
+    history_path = experiment_dir / f"{worker}_epoch_history.csv"
+    excel_path = experiment_dir / f"{worker}_training_results.xlsx"
+    summary.to_csv(summary_path, index=False)
 
     histories = []
     for receipt in receipts:
         path = Path(receipt["checkpoint_path"]).parent / "history.csv"
         if path.is_file():
             history = pd.read_csv(path)
+            history.insert(0, "run_id", receipt["run_id"])
+            history.insert(0, "backbone", receipt["backbone"])
             history.insert(0, "model", receipt["model"])
             history.insert(0, "family", receipt["family"])
+            history.insert(0, "worker_id", group_id)
+            history["seed"] = receipt["seed"]
+            history["split_hash"] = receipt["split_hash"]
+            history["protocol_id"] = protocol_id
             histories.append(history)
-    pd.concat(histories, ignore_index=True).to_csv(
-        experiment_dir / f"group_{group_id:02d}_epoch_history.csv", index=False) if histories else None
+    history_table = pd.concat(histories, ignore_index=True) if histories else pd.DataFrame()
+    history_table.to_csv(history_path, index=False)
+
+    protocol_table = pd.DataFrame(
+        {"key": protocol.keys(),
+         "value": [json.dumps(value, ensure_ascii=False) if isinstance(value, (dict, list)) else value
+                   for value in protocol.values()]})
+    with pd.ExcelWriter(excel_path, engine="openpyxl") as writer:
+        pd.DataFrame([{"worker_id": group_id, **candidate} for candidate in selected]).to_excel(
+            writer, sheet_name="Assignment", index=False)
+        pd.DataFrame(statuses).to_excel(writer, sheet_name="RunStatus", index=False)
+        summary.to_excel(writer, sheet_name="ModelSummary", index=False)
+        history_table.to_excel(writer, sheet_name="EpochHistory", index=False)
+        protocol_table.to_excel(writer, sheet_name="Protocol", index=False)
 
     manifest = {
         **protocol,
@@ -205,12 +256,22 @@ def run_group(group_id: int, candidates: list[dict]) -> int:
         "train_images": len(train_rows),
         "validation_images": len(val_rows),
         "complete_runs": sum(row["status"] == "complete" for row in statuses),
-        "failed_runs": sum(row["status"] != "complete" for row in statuses),
+        "failed_or_unavailable": sum(row["status"] != "complete" for row in statuses),
         "experiment_dir": str(experiment_dir),
+        "files": {
+            "summary_csv": str(summary_path),
+            "epoch_history_csv": str(history_path),
+            "status_csv": str(status_path),
+            "excel": str(excel_path),
+        },
     }
-    save_json(experiment_dir / f"group_{group_id:02d}_manifest.json", manifest)
+    manifest_path = experiment_dir / f"{worker}_manifest.json"
+    save_json(manifest_path, manifest)
     print(summary[[column for column in
                    ("family", "model", "val_macro_f1", "val_accuracy", "parameter_count", "training_seconds")
                    if column in summary]].to_string(index=False) if not summary.empty else "No completed runs")
-    print("Results:", experiment_dir)
+    print(f"\n=== {worker} finished ===", flush=True)
+    print(f"Results folder: {experiment_dir}", flush=True)
+    for path in (summary_path, history_path, status_path, manifest_path, excel_path):
+        print(f"  - {path.name}", flush=True)
     return 0 if receipts else 1

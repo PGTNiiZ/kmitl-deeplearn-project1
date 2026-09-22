@@ -7,7 +7,7 @@ from pathlib import Path
 from PIL import Image
 
 from src.audit import DEFAULT_EXTENSIONS, audit_dataset
-from src.split import prepare_split, read_rows
+from src.split import prepare_split, read_rows, source_id_for_path
 
 
 class FrozenSplitTest(unittest.TestCase):
@@ -36,6 +36,7 @@ class FrozenSplitTest(unittest.TestCase):
         metadata = self.split()
         train, val = read_rows(self.splits / 'train.csv'), read_rows(self.splits / 'val.csv')
         self.assertFalse({r['sha256'] for r in train} & {r['sha256'] for r in val})
+        self.assertFalse({r['source_id'] for r in train} & {r['source_id'] for r in val})
         self.assertEqual({r['label'] for r in train}, {'0', '1', '2'})
         self.assertEqual({r['label'] for r in val}, {'0', '1', '2'})
         self.assertEqual(len(train) + len(val), 31)
@@ -56,7 +57,7 @@ class FrozenSplitTest(unittest.TestCase):
         rows = read_rows(path)
         rows[0]['path'] = 'tampered.png'
         with path.open('w', newline='') as handle:
-            writer = csv.DictWriter(handle, fieldnames=['path', 'label', 'sha256'])
+            writer = csv.DictWriter(handle, fieldnames=['path', 'label', 'sha256', 'source_id'])
             writer.writeheader()
             writer.writerows(rows)
         with self.assertRaisesRegex(ValueError, 'modified'):
@@ -101,6 +102,22 @@ class FrozenSplitTest(unittest.TestCase):
         self.split()
         val = read_rows(self.splits / 'val.csv')
         self.assertFalse(any(r['path'].startswith('0/copy-') for r in val))
+
+    def test_augmented_family_stays_out_of_validation_and_cannot_leak(self):
+        Image.new('RGB', (20, 24), (1, 2, 3)).save(self.data / '0/1__aug_d3.png')
+        Image.new('RGB', (20, 24), (4, 5, 6)).save(self.data / '0/1__erode_k3_it1__aug_shift5.png')
+        self.run_audit()
+        metadata = self.split()
+        train, val = read_rows(self.splits / 'train.csv'), read_rows(self.splits / 'val.csv')
+        self.assertFalse({r['source_id'] for r in train} & {r['source_id'] for r in val})
+        self.assertFalse(any('__aug_' in r['path'] for r in val))
+        family = source_id_for_path('0/1.png')
+        self.assertEqual(family, source_id_for_path('0/1__aug_d3.png'))
+        if family in {r['source_id'] for r in val}:
+            self.assertFalse(any(r['source_id'] == family for r in train))
+            self.assertGreaterEqual(metadata['held_out_derived_images'], 2)
+        else:
+            self.assertEqual(sum(r['source_id'] == family for r in train), 3)
 
 
 if __name__ == '__main__':

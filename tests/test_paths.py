@@ -5,6 +5,7 @@ import zipfile
 from pathlib import Path
 from unittest.mock import patch
 
+from src.download_data import drive_file_id, gdown_command
 from src.paths import (DEFAULT_CLEAN_DATA_DIR, DRIVE_URL_KEY, ENVIRONMENT_KEY,
                        configured_data_dir, get_data_dir, get_drive_url,
                        prepare_image_directory)
@@ -37,3 +38,11 @@ class DataPathTest(unittest.TestCase):
         url = "https://drive.google.com/drive/folders/example"
         with patch.dict(os.environ, {DRIVE_URL_KEY: url}, clear=True):
             self.assertEqual(get_drive_url(), url)
+
+    def test_google_drive_file_url_id_is_detected(self) -> None:
+        url = "https://drive.google.com/file/d/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/view?usp=sharing"
+        self.assertEqual(drive_file_id(url), "1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq")
+        self.assertIsNone(drive_file_id("https://drive.google.com/drive/folders/example"))
+        command = gdown_command(url, Path("cache"))
+        self.assertEqual(command[3], "1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq")
+        self.assertNotIn("--id", command)

@@ -12,12 +12,28 @@ import importlib.util
 import subprocess
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 
 from src.paths import DEFAULT_DATA_DIR, get_drive_url
 
 
 def has_visible_files(directory: Path) -> bool:
     return directory.is_dir() and any(not item.name.startswith(".") for item in directory.iterdir())
+
+
+def drive_file_id(url: str) -> str | None:
+    """Return the ID from a standard Google Drive file URL, if present."""
+    parts = urlparse(url).path.strip("/").split("/")
+    return parts[2] if len(parts) >= 3 and parts[:2] == ["file", "d"] else None
+
+
+def gdown_command(drive_url: str, output_dir: Path) -> list[str]:
+    """Build a command compatible with gdown 5 and 6."""
+    file_id = drive_file_id(drive_url)
+    if file_id:
+        return [sys.executable, "-m", "gdown", file_id,
+                "-O", str(output_dir / "clean_32x32.zip")]
+    return [sys.executable, "-m", "gdown", "--folder", drive_url, "-O", str(output_dir)]
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -52,8 +68,9 @@ def main() -> int:
         print("gdown is not installed. Run: python3 -m pip install -r requirements.txt", file=sys.stderr)
         return 2
     output_dir.mkdir(parents=True, exist_ok=True)
-    command = [sys.executable, "-m", "gdown", "--folder", drive_url, "-O", str(output_dir)]
-    print(f"Downloading shared Google Drive folder to local cache: {output_dir}")
+    file_id = drive_file_id(drive_url)
+    command = gdown_command(drive_url, output_dir)
+    print(f"Downloading shared Google Drive {'file' if file_id else 'folder'} to local cache: {output_dir}")
     completed = subprocess.run(command, check=False)
     if completed.returncode != 0:
         print(

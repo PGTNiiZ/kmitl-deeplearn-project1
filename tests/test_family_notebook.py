@@ -58,23 +58,16 @@ class FamilyNotebookTest(unittest.TestCase):
         with patch.object(ns["timm"].models, "get_pretrained_cfg", return_value=None):
             self.assertEqual(ns["resolve_candidate"](row)["status"], "unavailable")
 
-    def test_real_data_download_failure_marks_incomplete_cache(self):
+    def test_real_data_requires_the_shared_split(self):
         source = next(c.source for c in self.notebook.cells
                       if 'if MODE == "smoke":\n    data_dir' in c.source)
-        branch = next(node for node in ast.walk(ast.parse(source).body[0])
-                      if isinstance(node, ast.If)
-                      and ast.unparse(node.test).startswith("not any(image_paths"))
-        code = compile(ast.Module(body=[branch], type_ignores=[]), "download", "exec")
         with tempfile.TemporaryDirectory() as directory:
-            ns = dict(data_dir=Path(directory) / "images", DEFAULT_EXTENSIONS=set(),
-                      image_paths=lambda *args: iter([]), DOWNLOAD_IF_MISSING=True,
-                      subprocess=Mock(), sys=Mock(), project_dir=ROOT)
-            exec(code, ns)
-            ns["subprocess"].run.assert_called_once()
-            ns["subprocess"].run.side_effect = RuntimeError("download failed")
-            with self.assertRaisesRegex(RuntimeError, "download failed"):
-                exec(code, ns)
-            self.assertTrue((ns["data_dir"] / ".download_incomplete").exists())
+            root = Path(directory)
+            ns = dict(MODE="quick", DATA_PATH=str(root / "images"), SPLIT_PATH=str(root / "split"),
+                      project_dir=ROOT, configured_data_dir=lambda: root / "images",
+                      EXPECTED_CLASSES=72, LABEL_LEVEL=1, Path=Path, results_dir=root / "results")
+            with self.assertRaisesRegex(FileNotFoundError, "split"):
+                exec(source, ns)
 
     def test_offline_smoke_hpo_export_reuse_and_failed_candidate(self):
         ns = self.setup_namespace()

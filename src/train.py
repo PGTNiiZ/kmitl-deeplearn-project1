@@ -20,7 +20,7 @@ from torch import nn
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 
-from src.split import fingerprint, read_rows
+from src.split import DERIVED_SUFFIX, fingerprint, read_rows, source_id_for_path
 
 
 @dataclass
@@ -160,6 +160,12 @@ def load_split(data_dir: Path, split_dir: Path):
         raise ValueError("Split/mapping hash mismatch. Restore the frozen manifests.")
     if {r["sha256"] for r in train} & {r["sha256"] for r in val}:
         raise ValueError("Duplicate leakage across train and validation")
+    train_sources = {r.get("source_id") or source_id_for_path(r["path"]) for r in train}
+    val_sources = {r.get("source_id") or source_id_for_path(r["path"]) for r in val}
+    if train_sources & val_sources:
+        raise ValueError("Augmented source-family leakage across train and validation")
+    if any(DERIVED_SUFFIX.search(Path(r["path"]).stem) for r in val):
+        raise ValueError("Validation must contain original images only")
     for row in train + val:
         path = (data_dir / row["path"]).resolve()
         if not path.is_relative_to(data_dir.resolve()) or not path.is_file():

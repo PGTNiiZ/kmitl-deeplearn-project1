@@ -16,6 +16,7 @@ results/predictions/
 results/error_analysis/
 results/model_search/
 results/model_family_search/
+results/team_model_benchmark/
 results/visual_smoke_demo/
 
 # Team 2 generated datasets and experiment outputs

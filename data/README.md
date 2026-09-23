@@ -35,6 +35,10 @@ data/
 └── synthetic/           # optional training-only generated images
 ```
 
+ชุดทดสอบจากผู้เขียนใหม่ต้องอยู่นอก training split ดูขั้นตอนสร้างแบบฟอร์มและตัดภาพที่
+[`docs/07-unseen-test-set.md`](../docs/07-unseen-test-set.md) ชุดนี้สร้างด้วย
+`python -m src.unseen_test` และไม่ถูกอ่านโดย training pipeline อัตโนมัติ
+
 The audit must determine the actual source layout. Do not assume a class-folder
 format. Validation must contain real images only; synthetic images never enter
 validation. Duplicate group IDs must stay entirely within one split.

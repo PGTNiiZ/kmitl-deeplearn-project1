@@ -1,0 +1,18 @@
+{
+  "status": "pre-final audit only; no final model frozen",
+  "development_dataset": "data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32",
+  "canonical_split_dir": "data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3",
+  "split_hash": "73c9c586053c6be848effe66676a9d9ba48125f9fc13bd7a842f74b5d331768e",
+  "historical_e1_checkpoint": "results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt",
+  "historical_e1_checkpoint_sha256": "c459fdf582eb9ff957f1d9014a51efecc12a6ad8caf02ba13b52a290168cb2d1",
+  "historical_e1_code_hash": "43c36a84c0b9badded27a820444d725ade29bf22a11cc54a93b92ef4a85ec706",
+  "current_train_split_code_hash_at_audit": "5e21c21210600d1d4ae6874359969593a860144ac578911883f14a5aecf0ff76",
+  "historical_e1_device": "cuda",
+  "current_device": "mps",
+  "e3": "skipped: train class count min 4786 max 4804; imbalance ratio 1.0037609694943586",
+  "e2": "not run; a same-code/same-budget E1 must precede a controlled comparison",
+  "e5": "not designed or run; requires E2 validation errors and image inspection",
+  "final_selection": "not performed",
+  "external_test_v1": "not accessed or run; final freeze prerequisite not met",
+  "tta_default": "none"
+}

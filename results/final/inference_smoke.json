@@ -1,0 +1,514 @@
+{
+  "scope": "inference execution only; no training or external test",
+  "checkpoint_sha256": "c459fdf582eb9ff957f1d9014a51efecc12a6ad8caf02ba13b52a290168cb2d1",
+  "architecture": "densenet121.ra_in1k",
+  "classes": 72,
+  "input_size": 128,
+  "fixture": {
+    "source": "three canonical validation images, one per class, symlinked into ephemeral folder",
+    "valid_image_paths": [
+      "/Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/0_ก/0001_padding6_Aksaramatee-Bold-Italic_ก__pad6.png",
+      "/Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/10_ฎ/0001_padding6_Aksaramatee-Bold-Italic_ฎ__pad6.png",
+      "/Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/11_ฐ/0005_padding6_Athiti-Bold_ฐ__pad6.png"
+    ],
+    "invalid_file_contents": "not a valid PNG",
+    "ephemeral_folder": "/var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/folder"
+  },
+  "limitations": [
+    "CUDA backend unavailable on this Mac; rejection tested, CUDA inference not tested",
+    "safe TTA execution only, no validation accuracy ablation",
+    "detector weights unavailable; no end-to-end multi-character validation",
+    "ephemeral folder and mismatch JSON paths existed during run; commands are exact historical invocations"
+  ],
+  "results": [
+    {
+      "name": "help",
+      "command": "/Users/thawaree.kha/kmitl-deeplearn-project1/.venv/bin/python -m src.inference --weights /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt --config /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json --labels /Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json --help",
+      "checkpoint": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt",
+      "config": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json",
+      "labels": "/Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json",
+      "requested_device": null,
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "assertions": [
+        true,
+        true
+      ],
+      "status": "PASS",
+      "stdout": "usage: python -m src.inference [-h] [--input INPUT] [--weights WEIGHTS]\n                               [--config CONFIG] [--labels LABELS]\n                               [--mode {single,multi,auto}]\n                               [--device {auto,cpu,cuda,mps}] [--top-k TOP_K]\n                               [--confidence-threshold CONFIDENCE_THRESHOLD]\n                               [--tta {none,safe}] [--output OUTPUT]\n                               [--detector-weights DETECTOR_WEIGHTS]\n                               [--detector-confidence DETECTOR_CONFIDENCE]\n                               [--bbox-margin BBOX_MARGIN] [--self-check]\n\nOffline inference for the 72-class Thai character classifier. The classifier\nis a closed-set isolated-character recognizer. Optional detector integration\nlocalizes separated characters but does not claim connected-text OCR.\n\noptions:\n  -h, --help            show this help message and exit\n  --input, --image INPUT\n                        Image file or directory\n  --weights WEIGHTS\n  --config CONFIG\n  --labels LABELS\n  --mode {single,multi,auto}\n  --device {auto,cpu,cuda,mps}\n  --top-k TOP_K\n  --confidence-threshold CONFIDENCE_THRESHOLD\n  --tta {none,safe}\n  --output OUTPUT       CSV/JSON output path; omitted for human-readable\n                        output\n  --detector-weights DETECTOR_WEIGHTS\n  --detector-confidence DETECTOR_CONFIDENCE\n  --bbox-margin BBOX_MARGIN\n  --self-check\n",
+      "stderr": ""
+    },
+    {
+      "name": "self_check_cpu",
+      "command": "/Users/thawaree.kha/kmitl-deeplearn-project1/.venv/bin/python -m src.inference --weights /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt --config /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json --labels /Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json --self-check --device cpu",
+      "checkpoint": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt",
+      "config": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json",
+      "labels": "/Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json",
+      "requested_device": "cpu",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "assertions": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "status": "PASS",
+      "stdout": "{\n  \"checkpoint\": \"/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt\",\n  \"sha256\": \"c459fdf582eb9ff957f1d9014a51efecc12a6ad8caf02ba13b52a290168cb2d1\",\n  \"architecture\": \"densenet121.ra_in1k\",\n  \"image_size\": 128,\n  \"classes\": 72,\n  \"dummy_prediction\": \"58_่\",\n  \"offline\": true\n}\n",
+      "stderr": ""
+    },
+    {
+      "name": "single_cpu_top3",
+      "command": "/Users/thawaree.kha/kmitl-deeplearn-project1/.venv/bin/python -m src.inference --weights /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt --config /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json --labels /Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json --input '/Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/0_ก/0001_padding6_Aksaramatee-Bold-Italic_ก__pad6.png' --device cpu --top-k 3",
+      "checkpoint": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt",
+      "config": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json",
+      "labels": "/Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json",
+      "requested_device": "cpu",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "assertions": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "status": "PASS",
+      "stdout": "Thai Character Recognition\n\nInput       : /Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/0_ก/0001_padding6_Aksaramatee-Bold-Italic_ก__pad6.png\nMode        : single\nDevice      : cpu\nArchitecture: densenet121.ra_in1k\nImage size  : 128\nTTA         : none\n\nPrediction\n────────────────────────────────\n1. 0_ก   100.00%\n2. 17_ถ   0.00%\n3. 18_ท   0.00%\n\nTop-1 confidence : 100.00%\nTop1-Top2 margin : 100.00%\nStatus           : OK\nInference time   : 34.5 ms\n",
+      "stderr": ""
+    },
+    {
+      "name": "single_auto",
+      "command": "/Users/thawaree.kha/kmitl-deeplearn-project1/.venv/bin/python -m src.inference --weights /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt --config /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json --labels /Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json --input '/Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/10_ฎ/0001_padding6_Aksaramatee-Bold-Italic_ฎ__pad6.png' --device auto",
+      "checkpoint": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt",
+      "config": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json",
+      "labels": "/Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json",
+      "requested_device": "auto",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "assertions": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "status": "PASS",
+      "stdout": "Thai Character Recognition\n\nInput       : /Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/10_ฎ/0001_padding6_Aksaramatee-Bold-Italic_ฎ__pad6.png\nMode        : single\nDevice      : mps\nArchitecture: densenet121.ra_in1k\nImage size  : 128\nTTA         : none\n\nPrediction\n────────────────────────────────\n1. 10_ฎ   100.00%\n2. 27_ภ   0.00%\n3. 24_ฝ   0.00%\n\nTop-1 confidence : 100.00%\nTop1-Top2 margin : 100.00%\nStatus           : OK\nInference time   : 1556.2 ms\n",
+      "stderr": ""
+    },
+    {
+      "name": "single_mps",
+      "command": "/Users/thawaree.kha/kmitl-deeplearn-project1/.venv/bin/python -m src.inference --weights /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt --config /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json --labels /Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json --input '/Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/11_ฐ/0005_padding6_Athiti-Bold_ฐ__pad6.png' --device mps",
+      "checkpoint": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt",
+      "config": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json",
+      "labels": "/Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json",
+      "requested_device": "mps",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "assertions": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "status": "PASS",
+      "stdout": "Thai Character Recognition\n\nInput       : /Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/11_ฐ/0005_padding6_Athiti-Bold_ฐ__pad6.png\nMode        : single\nDevice      : mps\nArchitecture: densenet121.ra_in1k\nImage size  : 128\nTTA         : none\n\nPrediction\n────────────────────────────────\n1. 11_ฐ   100.00%\n2. 36_ส   0.00%\n3. 38_ฬ   0.00%\n\nTop-1 confidence : 100.00%\nTop1-Top2 margin : 100.00%\nStatus           : OK\nInference time   : 868.5 ms\n",
+      "stderr": ""
+    },
+    {
+      "name": "folder_csv",
+      "command": "/Users/thawaree.kha/kmitl-deeplearn-project1/.venv/bin/python -m src.inference --weights /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt --config /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json --labels /Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json --input /var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/folder --device cpu --output /var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/out.csv",
+      "checkpoint": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt",
+      "config": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json",
+      "labels": "/Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json",
+      "requested_device": "cpu",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "assertions": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "status": "PASS",
+      "stdout": "",
+      "stderr": "",
+      "output_rows": [
+        {
+          "filename": "00.png",
+          "path": "/var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/folder/00.png",
+          "status": "OK",
+          "prediction": "0_ก",
+          "confidence": "1.0",
+          "margin": "0.999999999713227",
+          "top2_label": "17_ถ",
+          "top2_confidence": "2.867730219957565e-10",
+          "top3_label": "18_ท",
+          "top3_confidence": "3.683346336269544e-11",
+          "device": "cpu",
+          "mode": "single",
+          "inference_ms": "75.22594466960679",
+          "error": ""
+        },
+        {
+          "filename": "01.png",
+          "path": "/var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/folder/01.png",
+          "status": "OK",
+          "prediction": "10_ฎ",
+          "confidence": "1.0",
+          "margin": "1.0",
+          "top2_label": "27_ภ",
+          "top2_confidence": "1.0122087582879574e-22",
+          "top3_label": "24_ฝ",
+          "top3_confidence": "3.051329758612978e-23",
+          "device": "cpu",
+          "mode": "single",
+          "inference_ms": "75.22594466960679",
+          "error": ""
+        },
+        {
+          "filename": "02.png",
+          "path": "/var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/folder/02.png",
+          "status": "OK",
+          "prediction": "11_ฐ",
+          "confidence": "1.0",
+          "margin": "1.0",
+          "top2_label": "36_ส",
+          "top2_confidence": "1.2085036371096136e-18",
+          "top3_label": "38_ฬ",
+          "top3_confidence": "1.1179214146744043e-19",
+          "device": "cpu",
+          "mode": "single",
+          "inference_ms": "75.22594466960679",
+          "error": ""
+        },
+        {
+          "filename": "99_broken.png",
+          "path": "/var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/folder/99_broken.png",
+          "status": "ERROR",
+          "prediction": "",
+          "confidence": "",
+          "margin": "",
+          "top2_label": "",
+          "top2_confidence": "",
+          "top3_label": "",
+          "top3_confidence": "",
+          "device": "cpu",
+          "mode": "single",
+          "inference_ms": "0.0",
+          "error": "Image unreadable or unsupported (/var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/folder/99_broken.png): cannot identify image file '/var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/folder/99_broken.png'"
+        }
+      ]
+    },
+    {
+      "name": "folder_json",
+      "command": "/Users/thawaree.kha/kmitl-deeplearn-project1/.venv/bin/python -m src.inference --weights /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt --config /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json --labels /Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json --input /var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/folder --device cpu --output /var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/out.json",
+      "checkpoint": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt",
+      "config": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json",
+      "labels": "/Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json",
+      "requested_device": "cpu",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "assertions": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "status": "PASS",
+      "stdout": "",
+      "stderr": "",
+      "output_rows": [
+        {
+          "path": "/var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/folder/00.png",
+          "filename": "00.png",
+          "predicted_label": "0_ก",
+          "prediction": "0_ก",
+          "label": "0_ก",
+          "confidence": 1.0,
+          "margin": 0.999999999713227,
+          "top_k": [
+            {
+              "label": "0_ก",
+              "confidence": 1.0
+            },
+            {
+              "label": "17_ถ",
+              "confidence": 2.867730219957565e-10
+            },
+            {
+              "label": "18_ท",
+              "confidence": 3.683346336269544e-11
+            }
+          ],
+          "status": "OK",
+          "device": "cpu",
+          "mode": "single",
+          "inference_ms": 38.50350000235873,
+          "error": ""
+        },
+        {
+          "path": "/var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/folder/01.png",
+          "filename": "01.png",
+          "predicted_label": "10_ฎ",
+          "prediction": "10_ฎ",
+          "label": "10_ฎ",
+          "confidence": 1.0,
+          "margin": 1.0,
+          "top_k": [
+            {
+              "label": "10_ฎ",
+              "confidence": 1.0
+            },
+            {
+              "label": "27_ภ",
+              "confidence": 1.0122087582879574e-22
+            },
+            {
+              "label": "24_ฝ",
+              "confidence": 3.051329758612978e-23
+            }
+          ],
+          "status": "OK",
+          "device": "cpu",
+          "mode": "single",
+          "inference_ms": 38.50350000235873,
+          "error": ""
+        },
+        {
+          "path": "/var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/folder/02.png",
+          "filename": "02.png",
+          "predicted_label": "11_ฐ",
+          "prediction": "11_ฐ",
+          "label": "11_ฐ",
+          "confidence": 1.0,
+          "margin": 1.0,
+          "top_k": [
+            {
+              "label": "11_ฐ",
+              "confidence": 1.0
+            },
+            {
+              "label": "36_ส",
+              "confidence": 1.2085036371096136e-18
+            },
+            {
+              "label": "38_ฬ",
+              "confidence": 1.1179214146744043e-19
+            }
+          ],
+          "status": "OK",
+          "device": "cpu",
+          "mode": "single",
+          "inference_ms": 38.50350000235873,
+          "error": ""
+        },
+        {
+          "path": "/var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/folder/99_broken.png",
+          "filename": "99_broken.png",
+          "status": "ERROR",
+          "error": "Image unreadable or unsupported (/var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/folder/99_broken.png): cannot identify image file '/var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/folder/99_broken.png'",
+          "prediction": "",
+          "confidence": "",
+          "margin": "",
+          "top_k": [],
+          "device": "cpu",
+          "mode": "single",
+          "inference_ms": 0.0
+        }
+      ]
+    },
+    {
+      "name": "top1_human",
+      "command": "/Users/thawaree.kha/kmitl-deeplearn-project1/.venv/bin/python -m src.inference --weights /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt --config /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json --labels /Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json --input '/Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/0_ก/0001_padding6_Aksaramatee-Bold-Italic_ก__pad6.png' --device cpu --top-k 1",
+      "checkpoint": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt",
+      "config": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json",
+      "labels": "/Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json",
+      "requested_device": "cpu",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "assertions": [
+        true,
+        true
+      ],
+      "status": "PASS",
+      "stdout": "Thai Character Recognition\n\nInput       : /Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/0_ก/0001_padding6_Aksaramatee-Bold-Italic_ก__pad6.png\nMode        : single\nDevice      : cpu\nArchitecture: densenet121.ra_in1k\nImage size  : 128\nTTA         : none\n\nPrediction\n────────────────────────────────\n1. 0_ก   100.00%\n\nTop-1 confidence : 100.00%\nStatus           : OK\nInference time   : 24.3 ms\n",
+      "stderr": ""
+    },
+    {
+      "name": "top1_json",
+      "command": "/Users/thawaree.kha/kmitl-deeplearn-project1/.venv/bin/python -m src.inference --weights /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt --config /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json --labels /Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json --input '/Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/0_ก/0001_padding6_Aksaramatee-Bold-Italic_ก__pad6.png' --device cpu --top-k 1 --output /var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/top1.json",
+      "checkpoint": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt",
+      "config": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json",
+      "labels": "/Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json",
+      "requested_device": "cpu",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "assertions": [
+        true,
+        true
+      ],
+      "status": "PASS",
+      "stdout": "",
+      "stderr": "",
+      "output_row": {
+        "path": "/Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/0_ก/0001_padding6_Aksaramatee-Bold-Italic_ก__pad6.png",
+        "filename": "0001_padding6_Aksaramatee-Bold-Italic_ก__pad6.png",
+        "predicted_label": "0_ก",
+        "prediction": "0_ก",
+        "label": "0_ก",
+        "confidence": 1.0,
+        "margin": null,
+        "top_k": [
+          {
+            "label": "0_ก",
+            "confidence": 1.0
+          }
+        ],
+        "status": "OK",
+        "device": "cpu",
+        "mode": "single",
+        "inference_ms": 21.901833009906113,
+        "error": ""
+      }
+    },
+    {
+      "name": "top1_csv",
+      "command": "/Users/thawaree.kha/kmitl-deeplearn-project1/.venv/bin/python -m src.inference --weights /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt --config /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json --labels /Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json --input '/Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/0_ก/0001_padding6_Aksaramatee-Bold-Italic_ก__pad6.png' --device cpu --top-k 1 --output /var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/top1.csv",
+      "checkpoint": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt",
+      "config": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json",
+      "labels": "/Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json",
+      "requested_device": "cpu",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "assertions": [
+        true,
+        true
+      ],
+      "status": "PASS",
+      "stdout": "",
+      "stderr": "",
+      "output_row": {
+        "filename": "0001_padding6_Aksaramatee-Bold-Italic_ก__pad6.png",
+        "path": "/Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/0_ก/0001_padding6_Aksaramatee-Bold-Italic_ก__pad6.png",
+        "status": "OK",
+        "prediction": "0_ก",
+        "confidence": "1.0",
+        "margin": "",
+        "top2_label": "",
+        "top2_confidence": "",
+        "top3_label": "",
+        "top3_confidence": "",
+        "device": "cpu",
+        "mode": "single",
+        "inference_ms": "25.014957995153964",
+        "error": ""
+      }
+    },
+    {
+      "name": "tta_safe",
+      "command": "/Users/thawaree.kha/kmitl-deeplearn-project1/.venv/bin/python -m src.inference --weights /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt --config /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json --labels /Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json --input '/Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/0_ก/0001_padding6_Aksaramatee-Bold-Italic_ก__pad6.png' --device cpu --tta safe",
+      "checkpoint": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt",
+      "config": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json",
+      "labels": "/Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json",
+      "requested_device": "cpu",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "assertions": [
+        true
+      ],
+      "status": "PASS",
+      "stdout": "Thai Character Recognition\n\nInput       : /Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/0_ก/0001_padding6_Aksaramatee-Bold-Italic_ก__pad6.png\nMode        : single\nDevice      : cpu\nArchitecture: densenet121.ra_in1k\nImage size  : 128\nTTA         : safe\n\nPrediction\n────────────────────────────────\n1. 0_ก   100.00%\n2. 17_ถ   0.00%\n3. 18_ท   0.00%\n\nTop-1 confidence : 100.00%\nTop1-Top2 margin : 100.00%\nStatus           : OK\nInference time   : 80.7 ms\n",
+      "stderr": ""
+    },
+    {
+      "name": "config_mismatch",
+      "command": "/Users/thawaree.kha/kmitl-deeplearn-project1/.venv/bin/python -m src.inference --weights /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt --config /var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/mismatch.json --labels /Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json --self-check --device cpu",
+      "checkpoint": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt",
+      "config": "/var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/mismatch.json",
+      "labels": "/Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json",
+      "requested_device": "cpu",
+      "expected_exit": 2,
+      "actual_exit": 2,
+      "assertions": [
+        true,
+        true
+      ],
+      "status": "PASS",
+      "stdout": "",
+      "stderr": "Inference error: Config/checkpoint mismatch for 'image_size': 224 != 128\n"
+    },
+    {
+      "name": "label_mismatch",
+      "command": "/Users/thawaree.kha/kmitl-deeplearn-project1/.venv/bin/python -m src.inference --weights /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt --config /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json --labels /var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/mismatch-labels.json --self-check --device cpu",
+      "checkpoint": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt",
+      "config": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json",
+      "labels": "/var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/mismatch-labels.json",
+      "requested_device": "cpu",
+      "expected_exit": 2,
+      "actual_exit": 2,
+      "assertions": [
+        true
+      ],
+      "status": "PASS",
+      "stdout": "",
+      "stderr": "Inference error: External label mapping disagrees with the checkpoint label mapping\n"
+    },
+    {
+      "name": "cuda_unavailable",
+      "command": "/Users/thawaree.kha/kmitl-deeplearn-project1/.venv/bin/python -m src.inference --weights /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt --config /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json --labels /Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json --self-check --device cuda",
+      "checkpoint": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt",
+      "config": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json",
+      "labels": "/Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json",
+      "requested_device": "cuda",
+      "expected_exit": 2,
+      "actual_exit": 2,
+      "assertions": [
+        true
+      ],
+      "status": "PASS",
+      "stdout": "",
+      "stderr": "Inference error: CUDA was requested but no CUDA GPU is available to PyTorch\n"
+    },
+    {
+      "name": "multi_missing_weights",
+      "command": "/Users/thawaree.kha/kmitl-deeplearn-project1/.venv/bin/python -m src.inference --weights /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt --config /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json --labels /Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json --input '/Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/0_ก/0001_padding6_Aksaramatee-Bold-Italic_ก__pad6.png' --mode multi --device cpu",
+      "checkpoint": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt",
+      "config": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json",
+      "labels": "/Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json",
+      "requested_device": "cpu",
+      "expected_exit": 1,
+      "actual_exit": 1,
+      "assertions": [
+        true
+      ],
+      "status": "PASS",
+      "stdout": "",
+      "stderr": "Detector weights are required for explicit multi mode\n"
+    },
+    {
+      "name": "auto_detector_fallback",
+      "command": "/Users/thawaree.kha/kmitl-deeplearn-project1/.venv/bin/python -m src.inference --weights /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt --config /Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json --labels /Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json --input '/Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/0_ก/0001_padding6_Aksaramatee-Bold-Italic_ก__pad6.png' --mode auto --detector-weights /var/folders/0b/pxgwyp4d2p1dnnfw321vr_9r0000gp/T/inference-final-_1c4ttbz/absent.pt --device cpu",
+      "checkpoint": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt",
+      "config": "/Users/thawaree.kha/kmitl-deeplearn-project1/results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json",
+      "labels": "/Users/thawaree.kha/kmitl-deeplearn-project1/data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json",
+      "requested_device": "cpu",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "assertions": [
+        true,
+        true
+      ],
+      "status": "PASS",
+      "stdout": "Thai Character Recognition\n\nInput       : /Users/thawaree.kha/kmitl-deeplearn-project1/data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/0_ก/0001_padding6_Aksaramatee-Bold-Italic_ก__pad6.png\nMode        : single\nDevice      : cpu\nArchitecture: densenet121.ra_in1k\nImage size  : 128\nTTA         : none\n\nPrediction\n────────────────────────────────\n1. 0_ก   100.00%\n2. 17_ถ   0.00%\n3. 18_ท   0.00%\n\nTop-1 confidence : 100.00%\nTop1-Top2 margin : 100.00%\nStatus           : OK\nInference time   : 22.4 ms\n",
+      "stderr": "Auto mode: detector unavailable (Detector unavailable: install/configure ultralytics for multi mode); falling back to single mode.\n"
+    }
+  ]
+}

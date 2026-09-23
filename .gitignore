@@ -2,6 +2,9 @@
 data/raw/
 data/clean/
 data/synthetic/
+data/unseen_test/collected/
+data/unseen_test/burapha_source/
+data/unseen_test/burapha_72/
 data/splits/**/*.csv
 data/splits/**/*.json
 *.zip
@@ -18,6 +21,7 @@ results/model_search/
 results/model_family_search/
 results/team_model_benchmark/
 results/visual_smoke_demo/
+results/unseen_test/
 
 # Team 2 generated datasets and experiment outputs
 notebooks/team2/team2_data/

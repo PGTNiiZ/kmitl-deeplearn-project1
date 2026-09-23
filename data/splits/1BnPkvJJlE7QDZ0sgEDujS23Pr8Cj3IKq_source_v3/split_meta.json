@@ -1,0 +1,20 @@
+{
+  "dataset_hash": "71976b1e6c705b38219ff49233431701f324402da5d6888495ef7ae5e8a5f9ab",
+  "seed": 42,
+  "val_fraction": 0.2,
+  "algorithm": "source-family-sha256-greedy-v3",
+  "conflicting_label_policy": "exclude",
+  "excluded_conflicting_hashes": 8,
+  "excluded_conflicting_images": 40,
+  "split_hash": "73c9c586053c6be848effe66676a9d9ba48125f9fc13bd7a842f74b5d331768e",
+  "train_images": 345569,
+  "val_images": 86103,
+  "source_images": 432000,
+  "included_images": 431672,
+  "original_images": 430519,
+  "derived_images": 1441,
+  "held_out_derived_images": 288,
+  "actual_val_fraction": 0.1999981417777148,
+  "num_classes": 72,
+  "train_only_classes": []
+}

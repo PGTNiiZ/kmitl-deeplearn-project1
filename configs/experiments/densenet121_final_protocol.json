@@ -1,0 +1,85 @@
+{
+  "protocol_id": "densenet121-final-v1",
+  "status": "locked",
+  "purpose": "Train the selected final DenseNet121 candidate before external inference.",
+  "model_selection": {
+    "architecture": "densenet121.ra_in1k",
+    "primary_metric": "val_macro_f1",
+    "tiebreaker": "val_accuracy",
+    "external_test_used_for_selection": false
+  },
+  "paths": {
+    "data_dir": "data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32",
+    "split_dir": "data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3",
+    "output_dir": "results/final/densenet121-final-v1/runs"
+  },
+  "split": {
+    "split_hash": "73c9c586053c6be848effe66676a9d9ba48125f9fc13bd7a842f74b5d331768e",
+    "train_images": 345569,
+    "validation_images": 86103,
+    "classes": 72,
+    "files": {
+      "train.csv": "a67b8ba6ae29ea0418a63848d06884ffc013307ae8effc48f7ebfc38cc4755ef",
+      "val.csv": "74b657c5cddb50143cdf44a8feec45f0aa47d9ebb5f8543c67ae4d90edd92110",
+      "label_to_index.json": "ce5c5cbc08e0c22c3cfcdef76a7eb8bec76c3e7bcaf17cb67855f82a690673f6",
+      "split_meta.json": "db8c5b4045ca9ac43922fbbace5f00a178e57daab635ecb1de75d7d2ebda8103"
+    }
+  },
+  "config": {
+    "architecture": "densenet121.ra_in1k",
+    "pretrained": true,
+    "seed": 42,
+    "image_size": 128,
+    "batch_size": 64,
+    "epochs": 50,
+    "freeze_epochs": 2,
+    "head_lr": 0.001,
+    "finetune_lr": 0.0001,
+    "weight_decay": 0.0001,
+    "dropout": 0.3,
+    "label_smoothing": 0.0,
+    "augmentation": false,
+    "class_weights": false,
+    "patience": 10,
+    "num_workers": 4,
+    "amp": true,
+    "device": "auto",
+    "mean": [0.485, 0.456, 0.406],
+    "std": [0.229, 0.224, 0.225],
+    "pad_value": 255
+  },
+  "training_contract": {
+    "loss": "cross_entropy",
+    "optimizer": "adamw",
+    "scheduler": "reduce_lr_on_plateau",
+    "scheduler_monitor": "val_macro_f1",
+    "scheduler_mode": "max",
+    "scheduler_factor": 0.2,
+    "scheduler_patience": 2,
+    "gradient_clip_norm": 5.0,
+    "checkpoint_monitor": "val_macro_f1_then_val_accuracy",
+    "validation_augmentation": false
+  },
+  "environment": {
+    "packages": {
+      "torch": "2.15.0.dev20260920+cu132",
+      "torchvision": "0.30.0.dev20260921+cu132",
+      "timm": "1.0.29",
+      "numpy": "2.4.6",
+      "scikit-learn": "1.9.1"
+    },
+    "device_type": "cuda",
+    "device_name": "NVIDIA GeForce RTX 5070 Ti",
+    "training_code_hash": "5e21c21210600d1d4ae6874359969593a860144ac578911883f14a5aecf0ff76"
+  },
+  "inference_contract": {
+    "color_mode": "RGB",
+    "resize": "aspect_preserving_pad",
+    "interpolation": "bilinear",
+    "tta": "none",
+    "top_k": 3,
+    "confidence_threshold": 0.0,
+    "use_checkpoint_embedded_config": true,
+    "use_checkpoint_embedded_label_mapping": true
+  }
+}

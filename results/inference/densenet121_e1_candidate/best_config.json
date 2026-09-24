@@ -1,0 +1,31 @@
+{
+  "architecture": "densenet121.ra_in1k",
+  "pretrained": true,
+  "seed": 42,
+  "image_size": 128,
+  "batch_size": 64,
+  "epochs": 50,
+  "freeze_epochs": 2,
+  "head_lr": 0.001,
+  "finetune_lr": 0.0001,
+  "weight_decay": 0.0001,
+  "dropout": 0.3,
+  "label_smoothing": 0.0,
+  "augmentation": false,
+  "class_weights": false,
+  "patience": 10,
+  "num_workers": 4,
+  "amp": true,
+  "device": "auto",
+  "mean": [
+    0.485,
+    0.456,
+    0.406
+  ],
+  "std": [
+    0.229,
+    0.224,
+    0.225
+  ],
+  "pad_value": 255
+}

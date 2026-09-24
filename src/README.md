@@ -43,17 +43,18 @@ python3 -m venv .venv
 The included model recognizes one isolated Thai character per image. It does not
 perform connected-text OCR.
 
-The current implicit default is the **older MobileNetV3** artifact at
-`results/model_search/full/e90d3777438a/export/`. It is not the locked
-DenseNet121 E1 output. For the existing DenseNet121 candidate, specify all
-three artifacts explicitly (and do the same with the eventual final export):
+The current default is the **DenseNet121 E1 candidate** at
+`results/inference/densenet121_e1_candidate/`. Its checkpoint, config, and
+Thai label mapping are included in the repository. This is a runnable E1
+checkpoint, not a claim that E1/E2 comparison or final model selection is complete.
+To select this model explicitly:
 
 ```bash
 python -m src.inference \
-  --weights results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/best.pt \
-  --config results/train-for-bestmodel/31e3890aa46ae116/runs/group_02_screening-densenet121.ra_in1k-18bddfb447/config.json \
-  --labels data/splits/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq_source_v3/label_to_index.json \
-  --input data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/consonants/0_ก/0001_padding6_Aksaramatee-Bold-Italic_ก__pad6.png \
+  --weights results/inference/densenet121_e1_candidate/best_model.pt \
+  --config results/inference/densenet121_e1_candidate/best_config.json \
+  --labels results/inference/densenet121_e1_candidate/label_to_index.json \
+  --input path/to/character.png \
   --device cpu --top-k 3
 ```
 

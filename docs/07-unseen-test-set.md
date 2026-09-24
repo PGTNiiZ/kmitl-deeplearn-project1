@@ -25,6 +25,7 @@ python -m src.audit \
 
 python -m src.inference \
   --input data/unseen_test/burapha_72/images \
+  --weights results/model_search/full/e90d3777438a/export/best_model.pt \
   --device cpu \
   --output results/unseen_test/burapha_predictions.csv
 

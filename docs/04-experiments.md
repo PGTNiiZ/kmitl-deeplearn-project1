@@ -58,10 +58,11 @@ baseline. These are different experiment families; do not combine their numbers.
   same-environment 50-epoch E1/E2 pair was run in this round. No E5 policy was
   defined or trained; first inspect errors from the strongest completed pre-E5
   local model and then freeze one policy before training.
-- Existing inference entry: `python -m src.inference`. Default checkpoint remains
-  `results/model_search/full/e90d3777438a/export/best_model.pt` (an older
-  MobileNetV3, 224 pixels, numeric labels, not this DenseNet split). Explicit
-  `--weights`, `--config`, and `--labels` load the DenseNet baseline. An observed
+- Existing inference entry: `python -m src.inference`. Default checkpoint is now
+  `results/inference/densenet121_e1_candidate/best_model.pt`, packaged with its
+  config and Thai label mapping. This is the historical E1 candidate, not a
+  selected final model. The older MobileNetV3 export remains available with
+  explicit `--weights`. An observed
   JSON list-versus-checkpoint tuple conflict for mean/std was fixed narrowly;
   the regression test and the 36-test suite pass. CPU self-check and single,
   MPS single/auto, folder, Top-3, confidence/margin, CSV and JSON were exercised on canonical

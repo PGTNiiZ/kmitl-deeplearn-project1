@@ -23,7 +23,7 @@ from src.train import TrainConfig, build_model, make_transform, choose_device
 
 SUPPORTED_EXTENSIONS = {".bmp", ".jpeg", ".jpg", ".png", ".tif", ".tiff", ".webp"}
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_EXPORT = REPOSITORY_ROOT / "results" / "model_search" / "full" / "e90d3777438a" / "export"
+DEFAULT_EXPORT = REPOSITORY_ROOT / "results" / "inference" / "densenet121_e1_candidate"
 
 
 @dataclass(frozen=True)

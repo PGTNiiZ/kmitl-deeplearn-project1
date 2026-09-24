@@ -11,6 +11,31 @@ performance. Real dataset audit/quality review and full GPU experiments remain
 to be run. Near-duplicate/source grouping and separate unseen-test evaluation
 remain dataset-specific work. Do not mix smoke, screening and confirmation scores.
 
+## Locked DenseNet121 dataset handoff
+
+The canonical dataset is not stored in GitHub. Copy the separately transferred
+dataset to exactly:
+
+`data/raw/1BnPkvJJlE7QDZ0sgEDujS23Pr8Cj3IKq/clean_32x32/`
+
+The locked manifests define 345,569 training images and 86,103 validation images
+(431,672 total across 72 classes) under split hash
+`73c9c586053c6be848effe66676a9d9ba48125f9fc13bd7a842f74b5d331768e`.
+After copying the dataset, run:
+
+`python -m src.locked_train --check-files-only`
+
+This preflight verifies the manifest counts, every canonical file's existence and
+readability, labels, per-class counts, duplicate entries, train/validation path,
+manifest SHA256 overlap, and source-ID isolation, plus the frozen split artifacts. Extra
+unrelated image files are reported but are not used. Do not run E1 after a failed
+preflight or with a partial dataset. Only after a full PASS should the teammate run
+`python -m src.locked_train` in the locked RTX 5070 Ti environment.
+
+The normal check does not decode all images or hash every byte. When a byte-level
+copy verification is required, run the explicit optional check:
+`python -m src.locked_train --check-files-only --verify-content-hashes`.
+
 ## Objective
 
 Implement a reproducible 72-class Thai character/digit training and inference

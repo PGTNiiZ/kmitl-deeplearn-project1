@@ -3,6 +3,11 @@
 ลำดับใช้งาน: **00 แนวคิด CNN → 01 ทดลองโมเดล → 02 ทดลอง model family → 03 template สมาชิก**
 เลขเริ่มใหม่ในโฟลเดอร์นี้; รายการ notebook 04–12 ท้ายเอกสารเป็นแผนที่ยังไม่ได้สร้าง
 
+ถ้าต้องการทำนายภาพโดยไม่เทรน เปิด [inference-demo.ipynb](inference-demo.ipynb)
+เลือก kernel `.venv`, ใส่ path รูปหรือโฟลเดอร์ใน `INPUT_PATH` แล้วกด Run All
+โน้ตบุ๊กใช้โมเดล DenseNet121 E1 candidate ที่อยู่ใน repo; รูปเดี่ยวแสดง Top-3
+และโฟลเดอร์บันทึก `results/predictions/notebook_predictions.csv`
+
 สมาชิกใหม่ควรอ่าน [คู่มือใช้โปรเจกต์และทำงานร่วมกัน](../docs/00-team-guide.md)
 ก่อน คู่มือระบุขั้นตอนติดตั้ง การรับ split กลาง การส่งผล และ Git workflow
 ส่วนเอกสารนี้เก็บรายละเอียดเฉพาะ notebook
